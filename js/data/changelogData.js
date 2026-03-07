@@ -4,6 +4,19 @@
 
 export const changelogData = [
   {
+    version: "1.3.0",
+    date: "2026-03-07",
+    changes: [
+      "New: Element Information Toggle (EIT) — visualize any numeric property across the entire periodic table with Color or Filter mode",
+      "New: Click property values in the element modal to toggle between different units (e.g. °C ↔ °F ↔ K)",
+      "Data: Comprehensive element data audit & corrections for accuracy",
+      "Performance: 3D atom renderer optimized — nucleus interior culling, geometry caching, reusable vector pool",
+      "Performance: EIT slider uses fast-path DOM updates for jank-free interaction",
+      "UI: Orbit hover highlighting in 3D atom view",
+      "Cleanup: Removed 1.16 MB of redundant files, streamlined codebase",
+    ],
+  },
+  {
     version: "1.2.0",
     date: "2026-03-01",
     changes: [

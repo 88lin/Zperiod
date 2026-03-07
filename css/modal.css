@@ -56,6 +56,82 @@
   box-shadow: 0 50px 120px -30px rgba(0, 0, 0, 0.15);
 }
 
+/* ===== Changelog Modal ===== */
+.modal-content.changelog-modal-content {
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 50px 120px -30px rgba(0, 0, 0, 0.15);
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* ===== Changelog Modal Cards ===== */
+.changelog-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: #fdfdfd;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.changelog-card:hover {
+  background: #ffffff;
+  border-color: rgba(99, 102, 241, 0.2);
+  transform: translateX(4px);
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.06);
+}
+
+.changelog-badge {
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 6px 10px;
+  border-radius: 8px;
+  margin-top: 2px;
+}
+
+.badge-new {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.badge-data {
+  background: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.badge-perf {
+  background: rgba(99, 102, 241, 0.1);
+  color: #6366f1;
+}
+
+.badge-ui {
+  background: rgba(236, 72, 153, 0.1);
+  color: #db2777;
+}
+
+.changelog-card-content strong {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-bottom: 4px;
+}
+
+.changelog-card-content p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #6b7280;
+  margin: 0;
+}
+
 .modal-overlay.active .modal-content {
   transform: scale(1);
 }
@@ -2002,6 +2078,10 @@
   padding-left: 10px;
 }
 
+.l3-stat-item.l3-clickable {
+  cursor: pointer;
+}
+
 .l3-stat-label {
   font-size: 0.6rem;
   text-transform: uppercase;
@@ -3755,5 +3835,3 @@
     transform: scale(1);
   }
 }
-
-

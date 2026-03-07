@@ -12,11 +12,10 @@ import {
   buildPeriodicTable,
   initModalUI,
   reRenderCurrentAtomModal
-} from "./js/modules/uiController.js?v=17";
-import { initIonsTable } from "./js/modules/ionsController.js?v=17";
-import { initPageController } from "./js/modules/pageController.js?v=17";
-import { createToolsModalController } from "./js/modules/toolsModalController.js?v=17";
-import { changelogData } from "./js/data/changelogData.js?v=17";
+} from "./js/modules/uiController.js";
+import { initPageController } from "./js/modules/pageController.js";
+import { createToolsModalController } from "./js/modules/toolsModalController.js";
+import { changelogData } from "./js/data/changelogData.js";
 
 // ========================================
 // Welcome Modal - Intro Page
@@ -63,45 +62,150 @@ window._zperiodIsDragging = false;
 window._zperiodAnimPaused = localStorage.getItem('zperiod_anim_paused') === 'true';
 window._zperiodAnimSpeed = parseFloat(localStorage.getItem('zperiod_anim_speed')) || 0.6;
 
+// ========================================
+// Lazy Script/Module Loaders (performance)
+// ========================================
+const lazyScriptPromises = new Map();
+let ionsTableReady = false;
+let worksheetReady = false;
+let heroAtomModulePromise = null;
+
+function loadClassicScriptOnce(src) {
+  if (lazyScriptPromises.has(src)) return lazyScriptPromises.get(src);
+  const promise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = true;
+    script.dataset.lazySrc = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
+    document.body.appendChild(script);
+  });
+  lazyScriptPromises.set(src, promise);
+  return promise;
+}
+
+async function ensureIonsTableReady() {
+  if (ionsTableReady) return;
+  await loadClassicScriptOnce("js/ion-animations.js");
+  const { initIonsTable } = await import("./js/modules/ionsController.js");
+  initIonsTable();
+  ionsTableReady = true;
+}
+
+async function ensureWorksheetReady() {
+  if (worksheetReady) return;
+  await loadClassicScriptOnce("js/worksheet-generator.js");
+  worksheetReady = true;
+}
+
+function loadHeroAtomModule() {
+  if (heroAtomModulePromise) return heroAtomModulePromise;
+  heroAtomModulePromise = import("./js/modules/heroAtomRenderer.js");
+  return heroAtomModulePromise;
+}
+
 function initWelcomeModal() {
-  const modal = document.getElementById("welcome-modal");
+  const welcomeModal = document.getElementById("welcome-modal");
   const closeBtn = document.getElementById("welcome-close-btn");
   const startBtn = document.getElementById("welcome-start-btn");
-  if (!modal) return;
 
-  // Check if user has visited before
-  const hasVisited = localStorage.getItem("zperiod_welcomed");
-  if (!hasVisited) {
-    modal.classList.add("active");
+  const changelogModal = document.getElementById("changelog-modal");
+  const changelogCloseBtn = document.getElementById("changelog-close-btn");
+  const changelogDismissBtn = document.getElementById("changelog-dismiss-btn");
+
+  // ===== Current version for changelog gating =====
+  const CURRENT_VERSION = "1.3.0";
+
+  // ===== Welcome helpers =====
+  function openWelcomeModal() {
+    if (!welcomeModal) return;
+    welcomeModal.classList.add("active");
     document.body.classList.add("welcome-active");
     document.body.classList.add("hide-nav");
+    void loadHeroAtomModule()
+      .then(({ initHeroAtom }) => initHeroAtom())
+      .catch((e) => console.error("Hero 3D init error:", e));
   }
 
-  window._showWelcome = function showWelcome() {
-    modal.classList.add("active");
-    document.body.classList.add("welcome-active");
-    document.body.classList.add("hide-nav");
-  };
-
   function closeWelcome() {
-    modal.classList.remove("active");
+    if (!welcomeModal) return;
+    welcomeModal.classList.remove("active");
     document.body.classList.remove("welcome-active");
     document.body.classList.remove("hide-nav");
     localStorage.setItem("zperiod_welcomed", "true");
-    // Dispose hero WebGL renderer to free context
     if (window._heroCleanup) window._heroCleanup();
   }
 
+  // ===== Changelog helpers =====
+  function openChangelogModal() {
+    if (!changelogModal) return;
+    changelogModal.classList.add("active");
+    document.body.classList.add("hide-nav");
+  }
+
+  function closeChangelog() {
+    if (!changelogModal) return;
+    changelogModal.classList.remove("active");
+    document.body.classList.remove("hide-nav");
+    localStorage.setItem("zperiod_changelog_seen", CURRENT_VERSION);
+    // Also mark as welcomed so the welcome modal won't pop up after
+    localStorage.setItem("zperiod_welcomed", "true");
+  }
+
+  // ===== Decide which to show =====
+  const seenChangelogVersion = localStorage.getItem("zperiod_changelog_seen");
+  const hasVisited = localStorage.getItem("zperiod_welcomed");
+
+  if (seenChangelogVersion !== CURRENT_VERSION) {
+    // Changelog takes priority — show to ALL users (new or returning)
+    openChangelogModal();
+  } else if (!hasVisited) {
+    // No pending changelog, but first-time visitor → show welcome
+    openWelcomeModal();
+  }
+
+  // ===== Global helper to manually trigger welcome =====
+  window._showWelcome = function showWelcome() {
+    openWelcomeModal();
+  };
+
+  // ===== Event bindings: Welcome =====
   if (closeBtn) closeBtn.addEventListener("click", closeWelcome);
   if (startBtn) startBtn.addEventListener("click", closeWelcome);
+  if (welcomeModal) {
+    welcomeModal.addEventListener("click", (e) => {
+      if (window._zperiodIsDragging) return;
+      if (e.target === welcomeModal) closeWelcome();
+    });
+  }
 
-  modal.addEventListener("click", (e) => {
-    if (window._zperiodIsDragging) return;
-    if (e.target === modal) closeWelcome();
-  });
+  // ===== Event bindings: Changelog =====
+  if (changelogCloseBtn) changelogCloseBtn.addEventListener("click", closeChangelog);
+  if (changelogDismissBtn) changelogDismissBtn.addEventListener("click", closeChangelog);
 
+  const showChangelogBtn = document.getElementById("show-changelog-btn");
+  if (showChangelogBtn) {
+    showChangelogBtn.addEventListener("click", () => {
+      // Hide welcome modal and open changelog directly
+      if (welcomeModal) welcomeModal.classList.remove("active");
+      openChangelogModal();
+    });
+  }
+
+  if (changelogModal) {
+    changelogModal.addEventListener("click", (e) => {
+      if (window._zperiodIsDragging) return;
+      if (e.target === changelogModal) closeChangelog();
+    });
+  }
+
+  // ===== Escape key closes whichever is active =====
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal.classList.contains("active")) {
+    if (e.key !== "Escape") return;
+    if (changelogModal && changelogModal.classList.contains("active")) {
+      closeChangelog();
+    } else if (welcomeModal && welcomeModal.classList.contains("active")) {
       closeWelcome();
     }
   });
@@ -479,52 +583,52 @@ function bootstrapApp() {
     tooltip.className = 'advanced-tooltip';
     // Only "Coming soon"
     tooltip.innerText = 'Coming soon';
-    
+
     // Opaque Styles
     Object.assign(tooltip.style, {
-        position: 'fixed',
-        background: '#1a1a1a', // Dark opaque background
-        color: '#fff', // White text
-        padding: '6px 12px', // Compact padding
-        borderRadius: '20px', // Pill shape
-        fontSize: '12px',
-        fontWeight: '500',
-        lineHeight: '1',
-        pointerEvents: 'none',
-        zIndex: '9999',
-        display: 'none',
-        whiteSpace: 'nowrap', 
-        transform: 'translateY(-50%)',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)', // Softer shadow
-        fontFamily: '"Inter", sans-serif',
-        textAlign: 'center',
-        border: 'none' // Remove border since it's opaque
+      position: 'fixed',
+      background: '#1a1a1a', // Dark opaque background
+      color: '#fff', // White text
+      padding: '6px 12px', // Compact padding
+      borderRadius: '20px', // Pill shape
+      fontSize: '12px',
+      fontWeight: '500',
+      lineHeight: '1',
+      pointerEvents: 'none',
+      zIndex: '9999',
+      display: 'none',
+      whiteSpace: 'nowrap',
+      transform: 'translateY(-50%)',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)', // Softer shadow
+      fontFamily: '"Inter", sans-serif',
+      textAlign: 'center',
+      border: 'none' // Remove border since it's opaque
     });
     document.body.appendChild(tooltip);
 
     // Hover logic
     if (option) {
-        option.addEventListener('mouseenter', () => {
-             const rect = option.getBoundingClientRect();
-             // Position to the right of the dropdown menu
-             tooltip.style.top = (rect.top + rect.height / 2) + 'px';
-             tooltip.style.left = (rect.right + 12) + 'px'; // 12px gap
-             tooltip.style.display = 'block';
-             
-             // Add a subtle fade-in animation
-             tooltip.animate([
-               { opacity: 0, transform: 'translateY(-50%) translateX(-5px)' },
-               { opacity: 1, transform: 'translateY(-50%) translateX(0)' }
-             ], { duration: 200, easing: 'ease-out' });
-        });
-        option.addEventListener('mouseleave', () => {
-             tooltip.style.display = 'none';
-        });
+      option.addEventListener('mouseenter', () => {
+        const rect = option.getBoundingClientRect();
+        // Position to the right of the dropdown menu
+        tooltip.style.top = (rect.top + rect.height / 2) + 'px';
+        tooltip.style.left = (rect.right + 12) + 'px'; // 12px gap
+        tooltip.style.display = 'block';
 
-        // Keep click disabled
-        option.addEventListener("click", (e) => {
-             e.stopPropagation();
-        });
+        // Add a subtle fade-in animation
+        tooltip.animate([
+          { opacity: 0, transform: 'translateY(-50%) translateX(-5px)' },
+          { opacity: 1, transform: 'translateY(-50%) translateX(0)' }
+        ], { duration: 200, easing: 'ease-out' });
+      });
+      option.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
+
+      // Keep click disabled
+      option.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
     }
   }
   initPeriodicTableScale();
@@ -544,8 +648,18 @@ function bootstrapApp() {
     onTablePageShown: () => {
       if (window._scalePeriodicTable) window._scalePeriodicTable();
     },
+    onIonsPageShown: () => {
+      void ensureIonsTableReady().catch((e) =>
+        console.error("Ions lazy init error:", e),
+      );
+    },
     onToolsPageShown: () => {
       setTimeout(() => toolsModalController.initChemToolCards(), 100);
+    },
+    onWorksheetPageShown: () => {
+      void ensureWorksheetReady().catch((e) =>
+        console.error("Worksheet lazy init error:", e),
+      );
     },
   });
 
@@ -557,17 +671,9 @@ function bootstrapApp() {
     });
   }
 
-  try {
-    initIonsTable();
-  } catch (e) {
-    console.error("Ions table init error:", e);
-  }
-
   requestAnimationFrame(() => {
     if (window._scalePeriodicTable) window._scalePeriodicTable();
   });
-
-  initHeroAtom();
   initSettingsPage();
 }
 
@@ -637,7 +743,7 @@ function initSettingsPage() {
             content: `📬 **New Suggestion from Zperiod**\n> ${text}\n\n_Sent at ${new Date().toLocaleString()}_`,
           }),
         },
-      ).catch(() => {});
+      ).catch(() => { });
       suggInput.value = "";
       suggSend.innerHTML = checkIconHTML;
       suggSend.classList.add("sent");
@@ -2604,7 +2710,7 @@ function attachMolarMassListeners() {
 let empiricalElementCount = 3; // Track number of element rows
 
 /* ---- Supported element-color CSS classes ---- */
-const EMP_COLORED = ['C','H','O','N','S','P','Cl','Na','K','Ca','Fe','Mg','Br','F','I','Cu','Zn'];
+const EMP_COLORED = ['C', 'H', 'O', 'N', 'S', 'P', 'Cl', 'Na', 'K', 'Ca', 'Fe', 'Mg', 'Br', 'F', 'I', 'Cu', 'Zn'];
 function empColorClass(sym) {
   return EMP_COLORED.includes(sym) ? `el-${sym}` : sym ? 'has-value' : '';
 }
@@ -2785,7 +2891,7 @@ function attachEmpiricalListeners() {
 }
 
 function updateElementButtons() {
-  const addBtn  = document.getElementById('emp-add-element-btn');
+  const addBtn = document.getElementById('emp-add-element-btn');
   const removeBtn = document.getElementById('emp-remove-element-btn');
   if (addBtn) addBtn.disabled = empiricalElementCount >= 6;
   if (removeBtn) removeBtn.disabled = empiricalElementCount <= 2;
@@ -3588,9 +3694,9 @@ function smartParseFormula(input) {
   let processed = input
     .trim()
     .replace(/\s+/g, "")
-    .replace(/[\*\+\。\·]+/g, ".")
+    .replace(/[*+。·]+/g, ".")
     .replace(/\.+/g, ".")
-    .replace(/[^A-Za-z0-9().\[\]]/g, "");
+    .replace(/[^A-Za-z0-9().[\]]/g, "");
 
   let suspicious = null;
 
@@ -3774,299 +3880,4 @@ function printReceipt(result) {
     items.innerHTML = html;
     total.textContent = result.total + " g/mol";
   }
-}
-
-// ========== Hero 3D Atom for About Page ==========
-function initHeroAtom() {
-  const heroContainer = document.getElementById("hero-atom-container");
-  if (!heroContainer) return;
-
-  let heroScene, heroCamera, heroRenderer, heroAtomGroup, heroAnimationId;
-  let heroElectrons = [];
-
-  function initHero3D() {
-    try {
-      heroScene = new THREE.Scene();
-      // Use fixed size matching CSS
-      const width = 480;
-      const height = 480;
-      heroCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-      heroCamera.position.z = 18;
-
-      heroRenderer = new THREE.WebGLRenderer({
-        antialias: true,
-        alpha: true,
-        powerPreference: "low-power",
-      });
-      heroRenderer.setSize(width, height);
-      heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      heroContainer.appendChild(heroRenderer.domElement);
-
-      const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-      heroScene.add(ambientLight);
-      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
-      directionalLight.position.set(10, 10, 10);
-      heroScene.add(directionalLight);
-
-      heroAtomGroup = new THREE.Group();
-      heroScene.add(heroAtomGroup);
-
-      // Build Na atom (atomic number 11) - exactly like updateAtomStructure
-      buildHeroAtom(11);
-
-      // Start animation
-      animateHero();
-    } catch (e) {
-      // Hero 3D not available
-    }
-  }
-
-  function buildHeroAtom(atomicNumber) {
-    const nucleusGroup = new THREE.Group();
-    nucleusGroup.name = "nucleusGroup";
-    heroAtomGroup.add(nucleusGroup);
-    const wobbleGroup = new THREE.Group();
-    wobbleGroup.name = "wobbleGroup";
-    heroAtomGroup.add(wobbleGroup);
-
-    // Na has 12 neutrons (23 - 11)
-    const neutronCount = 12;
-    const particleRadius = 0.6;
-
-    const protonGeo = new THREE.SphereGeometry(particleRadius, 32, 32);
-    const protonMat = new THREE.MeshStandardMaterial({
-      color: 0xff2222,
-      roughness: 0.25,
-      metalness: 0.4,
-      emissive: 0xff0000,
-      emissiveIntensity: 1.5,
-    });
-    const neutronGeo = new THREE.SphereGeometry(particleRadius, 32, 32);
-    const neutronMat = new THREE.MeshStandardMaterial({
-      color: 0x999999,
-      roughness: 0.15,
-      metalness: 0.5,
-      emissive: 0x333333,
-      emissiveIntensity: 0.6,
-    });
-
-    const particles = [];
-    for (let i = 0; i < atomicNumber; i++) particles.push({ type: "proton" });
-    for (let i = 0; i < neutronCount; i++) particles.push({ type: "neutron" });
-
-    // Shuffle
-    for (let i = particles.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [particles[i], particles[j]] = [particles[j], particles[i]];
-    }
-
-    const phi = Math.PI * (3 - Math.sqrt(5));
-    const n = particles.length;
-    const clusterScale = Math.pow(n, 1 / 3) * particleRadius * 0.8;
-
-    particles.forEach((p, i) => {
-      const k = i + 0.5;
-      const y = 1 - (k / n) * 2;
-      const theta = phi * k;
-      const r = Math.sqrt(1 - y * y);
-      const x = Math.cos(theta) * r;
-      const z = Math.sin(theta) * r;
-      p.pos = new THREE.Vector3(
-        x * clusterScale,
-        y * clusterScale,
-        z * clusterScale,
-      );
-      // Add random offset like original
-      p.pos.x += (Math.random() - 0.5) * 0.15;
-      p.pos.y += (Math.random() - 0.5) * 0.15;
-      p.pos.z += (Math.random() - 0.5) * 0.15;
-    });
-
-    // Physics iterations for nucleus compaction
-    const repulsionDist = particleRadius * 1.5;
-    const kRepulse = 0.2;
-    const kCenter = 0.1;
-    const vForce = new THREE.Vector3();
-    const vDiff = new THREE.Vector3();
-    const vTemp = new THREE.Vector3();
-    for (let iter = 0; iter < 5; iter++) {
-      particles.forEach((p1, idx1) => {
-        vForce.set(0, 0, 0);
-        vTemp.copy(p1.pos).multiplyScalar(-kCenter);
-        vForce.add(vTemp);
-        particles.forEach((p2, idx2) => {
-          if (idx1 === idx2) return;
-          vDiff.subVectors(p1.pos, p2.pos);
-          const dist = vDiff.length();
-          if (dist < repulsionDist && dist > 0.01) {
-            vDiff.normalize().multiplyScalar((repulsionDist - dist) * kRepulse);
-            vForce.add(vDiff);
-          }
-        });
-        p1.pos.add(vForce);
-      });
-    }
-
-    const centerLight = new THREE.PointLight(0xff0000, 2.0, 15);
-    nucleusGroup.add(centerLight);
-
-    particles.forEach((p) => {
-      const mesh = new THREE.Mesh(
-        p.type === "proton" ? protonGeo : neutronGeo,
-        p.type === "proton" ? protonMat : neutronMat,
-      );
-      mesh.position.copy(p.pos);
-      nucleusGroup.add(mesh);
-    });
-
-    // Electrons with exact same logic as updateAtomStructure
-    const shells = [2, 8, 8, 18, 18, 32, 32];
-    let electronsLeft = atomicNumber;
-    for (let s = 0; s < shells.length; s++) {
-      if (electronsLeft <= 0) break;
-      const capacity = shells[s];
-      const count = Math.min(electronsLeft, capacity);
-      electronsLeft -= count;
-      const radius = 4.5 + s * 2.5;
-
-      const orbitGeo = new THREE.TorusGeometry(radius, 0.04, 64, 100);
-      const orbitMat = new THREE.MeshBasicMaterial({
-        color: 0x8d7f71,
-        transparent: true,
-        opacity: 0.3,
-      });
-      const orbit = new THREE.Mesh(orbitGeo, orbitMat);
-      orbit.rotation.x = Math.PI / 2;
-      wobbleGroup.add(orbit);
-
-      const elGeo = new THREE.SphereGeometry(0.3, 32, 32);
-      const elMat = new THREE.MeshStandardMaterial({
-        color: 0x0000ff,
-        roughness: 0.4,
-        metalness: 0.6,
-      });
-
-      // Trail geometries
-      const trailGeos = [];
-      const TRAIL_LENGTH = 10;
-      for (let t = 0; t < TRAIL_LENGTH; t++) {
-        trailGeos.push(new THREE.SphereGeometry(0.2 - t * 0.015, 8, 8));
-      }
-
-      for (let e = 0; e < count; e++) {
-        const elMesh = new THREE.Mesh(elGeo, elMat);
-        const angleOffset = (e / count) * Math.PI * 2;
-        elMesh.userData = {
-          radius: radius,
-          angle: angleOffset,
-          speed: 0.02 - s * 0.002,
-          trails: [],
-        };
-        elMesh.position.x = radius * Math.cos(angleOffset);
-        elMesh.position.z = radius * Math.sin(angleOffset);
-
-        // Create trails
-        for (let t = 0; t < TRAIL_LENGTH; t++) {
-          const tGeo = trailGeos[t];
-          const tMat = new THREE.MeshBasicMaterial({
-            color: 0x0000ff,
-            transparent: true,
-            opacity: 0.3 - t * 0.03,
-          });
-          const tMesh = new THREE.Mesh(tGeo, tMat);
-          tMesh.position.copy(elMesh.position);
-          wobbleGroup.add(tMesh);
-          elMesh.userData.trails.push(tMesh);
-        }
-
-        wobbleGroup.add(elMesh);
-        heroElectrons.push(elMesh);
-      }
-    }
-
-    // Pop animation
-    heroAtomGroup.userData.popStartTime = Date.now();
-    heroAtomGroup.scale.set(0.1, 0.1, 0.1);
-  }
-
-  function animateHero() {
-    heroAnimationId = requestAnimationFrame(animateHero);
-
-    const isPaused = window._zperiodAnimPaused || false;
-    const speedMul = (typeof window._zperiodAnimSpeed === 'number') ? window._zperiodAnimSpeed : 0.6;
-    const time = Date.now() * 0.001;
-
-    // Pop animation
-    if (heroAtomGroup && heroAtomGroup.userData.popStartTime) {
-      const popElapsed =
-        (Date.now() - heroAtomGroup.userData.popStartTime) * 0.001;
-      const popDur = 0.5;
-      if (popElapsed < popDur) {
-        const t = popElapsed / popDur;
-        const ease = 1 - Math.pow(1 - t, 3);
-        const s = 0.1 + (1 - 0.1) * ease;
-        heroAtomGroup.scale.set(s, s, s);
-      } else {
-        heroAtomGroup.scale.set(1, 1, 1);
-        heroAtomGroup.userData.popStartTime = null;
-      }
-    }
-
-    // Slow auto-rotation
-    if (!isPaused) heroAtomGroup.rotation.y += 0.002 * speedMul;
-
-    // Wobble group animation
-    const wobbleGroup = heroAtomGroup.getObjectByName("wobbleGroup");
-    if (wobbleGroup && !isPaused) {
-      wobbleGroup.rotation.y += 0.002 * speedMul;
-      wobbleGroup.rotation.z = Math.sin(time * 0.5 * speedMul) * 0.2;
-      wobbleGroup.rotation.x = Math.cos(time * 0.3 * speedMul) * 0.1;
-    }
-
-    // Nucleus rotation
-    const nucleusGroup = heroAtomGroup.getObjectByName("nucleusGroup");
-    if (nucleusGroup && !isPaused) {
-      nucleusGroup.rotation.y -= 0.005 * speedMul;
-      nucleusGroup.rotation.x = Math.sin(time * 0.2 * speedMul) * 0.1;
-    }
-
-    // Animate electrons with trails
-    heroElectrons.forEach((el) => {
-      if (!isPaused) el.userData.angle += el.userData.speed * speedMul;
-      const r = el.userData.radius;
-      el.position.x = r * Math.cos(el.userData.angle);
-      el.position.z = r * Math.sin(el.userData.angle);
-
-      // Update trails
-      const trails = el.userData.trails;
-      if (trails && trails.length > 0) {
-        for (let i = trails.length - 1; i > 0; i--) {
-          trails[i].position.copy(trails[i - 1].position);
-        }
-        trails[0].position.copy(el.position);
-      }
-    });
-
-    heroRenderer.render(heroScene, heroCamera);
-  }
-
-  // Expose cleanup for welcome screen close
-  window._heroCleanup = function () {
-    if (heroAnimationId) cancelAnimationFrame(heroAnimationId);
-    heroAnimationId = null;
-    if (heroRenderer) {
-      heroRenderer.forceContextLoss();
-      heroRenderer.dispose();
-      if (heroRenderer.domElement && heroRenderer.domElement.parentNode) {
-        heroRenderer.domElement.parentNode.removeChild(heroRenderer.domElement);
-      }
-      heroRenderer = null;
-    }
-    heroScene = null;
-    heroCamera = null;
-    heroAtomGroup = null;
-    heroElectrons = [];
-  };
-
-  initHero3D();
 }

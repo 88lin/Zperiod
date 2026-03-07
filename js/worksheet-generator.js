@@ -863,7 +863,11 @@ function formatEquationForPDF(reaction, showAnswers) {
     return html;
 }
 
-// Initialize on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize on load (supports lazy-loaded script after DOMContentLoaded)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initWorksheetGenerator();
+    });
+} else {
     initWorksheetGenerator();
-});
+}

@@ -4,8 +4,8 @@
 // =============================================================================
 
 import { finallyData, elements } from "../data/elementsData.js";
-import { elementsData_v2 } from "../data/elementsData_v2.js";
 import {
+  ensureThreeLibLoaded,
   init3DScene,
   updateAtomStructure,
   onWindowResize,
@@ -16,12 +16,46 @@ import {
   renderScene,
 } from "./threeRenderer.js";
 
+// v2 dataset stub — file removed; branches gated by zperiodVersion === 'new' are inert.
+const elementsData_v2 = [];
+
 // ===== Legend & Category Highlighting =====
 let activeLegendCategory = null;
+let headlineResizeHandler = null;
+
+function clearHeadlineResizeHandler() {
+  if (!headlineResizeHandler) return;
+  window.removeEventListener("resize", headlineResizeHandler);
+  headlineResizeHandler = null;
+}
+
+function bindKeyboardActivation(el, onActivate) {
+  el.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    onActivate();
+  });
+}
+
+function clearLegendSelection(container) {
+  container.querySelectorAll(".legend-item.active").forEach((el) => {
+    el.classList.remove("active");
+    el.setAttribute("aria-pressed", "false");
+  });
+}
+
+function setLegendSelection(container, catClass) {
+  const legendItem = container.querySelector(
+    `.legend-item[data-category="${catClass}"]`,
+  );
+  if (!legendItem) return;
+  legendItem.classList.add("active");
+  legendItem.setAttribute("aria-pressed", "true");
+}
+
 function normalizeCategoryClass(catClass) {
   const aliasMap = {
-    "reactive-non-metal": "reactive-nonmetal",
-    "non-metal": "reactive-nonmetal",
+    "non-metal": "other-nonmetal",
   };
   return aliasMap[catClass] || catClass;
 }
@@ -42,6 +76,732 @@ function clearHighlights(container) {
   const highlighted = container.querySelectorAll(".element.highlighted");
   highlighted.forEach((el) => el.classList.remove("highlighted"));
 }
+
+const EIT_PROPERTY_CONFIG = [
+  { key: "category", label: "Category", type: "category" },
+  {
+    key: "meltingPoint",
+    label: "Melting Point",
+    type: "numeric",
+    unit: "°C",
+    digits: 0,
+    source: "meltingPoint",
+    units: [
+      { unit: "°C", digits: 0, convert: (v) => v },
+      { unit: "°F", digits: 0, convert: (v) => v * 9 / 5 + 32 },
+      { unit: "K", digits: 0, convert: (v) => v + 273.15 },
+    ],
+  },
+  {
+    key: "density",
+    label: "Density",
+    type: "numeric",
+    unit: "g/cm³",
+    digits: 2,
+    source: "density",
+  },
+  {
+    key: "boilingPoint",
+    label: "Boiling Point",
+    type: "numeric",
+    unit: "°C",
+    digits: 0,
+    source: "boilingPoint",
+    units: [
+      { unit: "°C", digits: 0, convert: (v) => v },
+      { unit: "°F", digits: 0, convert: (v) => v * 9 / 5 + 32 },
+      { unit: "K", digits: 0, convert: (v) => v + 273.15 },
+    ],
+  },
+  {
+    key: "electronegativity",
+    label: "Electronegativity",
+    type: "numeric",
+    unit: "",
+    digits: 2,
+    source: "electronegativity",
+  },
+  {
+    key: "firstIonization",
+    label: "1st Ionization",
+    type: "numeric",
+    unit: "kJ/mol",
+    digits: 0,
+    source: "firstIonization",
+    units: [
+      { unit: "kJ/mol", digits: 0, convert: (v) => v },
+      { unit: "eV", digits: 2, convert: (v) => v / 96.485 },
+    ],
+  },
+  {
+    key: "electronAffinity",
+    label: "Electron Affinity",
+    type: "numeric",
+    unit: "kJ/mol",
+    digits: 1,
+    source: "electronAffinity",
+    units: [
+      { unit: "kJ/mol", digits: 1, convert: (v) => v },
+      { unit: "eV", digits: 2, convert: (v) => v / 96.485 },
+    ],
+  },
+];
+const EIT_PROPERTY_MAP = new Map(EIT_PROPERTY_CONFIG.map((cfg) => [cfg.key, cfg]));
+let eitRegistry = [];
+let eitUI = null;
+let eitState = {
+  property: "category",
+  mode: "color",
+  numericRanges: new Map(),
+  unitIndex: new Map(),   // tracks which unit is active per property key
+};
+
+/** Get the active unit config for a property (with conversion function) */
+function getActiveUnit(config) {
+  if (!config?.units || !config.units.length) return null;
+  const idx = eitState.unitIndex.get(config.key) || 0;
+  return config.units[idx];
+}
+
+/** Cycle to the next unit for this property and return the new unit config */
+function cycleUnit(config) {
+  if (!config?.units || config.units.length <= 1) return null;
+  const currentIdx = eitState.unitIndex.get(config.key) || 0;
+  const nextIdx = (currentIdx + 1) % config.units.length;
+  eitState.unitIndex.set(config.key, nextIdx);
+  // Clear stored range so slider resets to new unit bounds
+  eitState.numericRanges.delete(config.key);
+  return config.units[nextIdx];
+}
+
+/** Get the effective unit string for display */
+function getEffectiveUnit(config) {
+  const alt = getActiveUnit(config);
+  return alt ? alt.unit : (config?.unit || "");
+}
+
+/** Get the effective digits for display */
+function getEffectiveDigits(config) {
+  const alt = getActiveUnit(config);
+  return alt ? alt.digits : (config?.digits ?? 2);
+}
+
+/** Convert a raw value (always stored in base unit like °C) to the active display unit */
+function convertToActiveUnit(value, config) {
+  if (!Number.isFinite(value)) return value;
+  const alt = getActiveUnit(config);
+  return alt ? alt.convert(value) : value;
+}
+let lockLegendInteractions = false;
+let eitPanelOpen = false;
+
+function normalizeCategoryLabel(category) {
+  return normalizeCategoryClass(String(category || "Unknown")
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^a-z0-9-]/g, ""));
+}
+
+function parseNumericMetric(rawValue, metricKey) {
+  if (rawValue === null || rawValue === undefined) return null;
+  if (typeof rawValue === "number") {
+    return Number.isFinite(rawValue) ? rawValue : null;
+  }
+  const text = String(rawValue).trim();
+  if (!text) return null;
+  if (text === "N/A" || text === "Unknown" || text === "—") return null;
+  if (text.includes("—")) return null;
+
+  const normalized = text.replace(/−/g, "-").replace(/,/g, "");
+  const match = normalized.match(/-?\d+(?:\.\d+)?/);
+  if (!match) return null;
+  const value = Number.parseFloat(match[0]);
+  if (!Number.isFinite(value)) return null;
+
+  if (metricKey === "firstIonization" && /ev/i.test(normalized)) {
+    return value * 96.485;
+  }
+  return value;
+}
+
+function getMetricValue(elementNumber, metricKey) {
+  const physical = finallyData[elementNumber]?.level3_properties?.physical || {};
+  return parseNumericMetric(physical[metricKey], metricKey);
+}
+
+function registerEITElementCell(cell, element) {
+  if (!cell || !element || typeof element.number !== "number") return;
+  const metrics = {};
+  EIT_PROPERTY_CONFIG.forEach((config) => {
+    if (config.type !== "numeric") return;
+    metrics[config.key] = getMetricValue(element.number, config.source);
+  });
+  eitRegistry.push({
+    cell,
+    number: element.number,
+    categoryLabel: element.category || "Unknown",
+    categoryClass: normalizeCategoryLabel(element.category),
+    metrics,
+  });
+}
+
+function resetEITState() {
+  eitState = {
+    property: "category",
+    mode: "color",
+    numericRanges: new Map(),
+    unitIndex: new Map(),
+  };
+  eitPanelOpen = false;
+}
+
+function resetEITRegistry() {
+  eitRegistry = [];
+}
+
+function formatEITValue(value, config, withUnit = false) {
+  if (!Number.isFinite(value)) return "N/A";
+  const displayValue = convertToActiveUnit(value, config);
+  const digits = getEffectiveDigits(config);
+  const valueText = displayValue.toFixed(digits);
+  if (!withUnit) return valueText;
+  const unit = getEffectiveUnit(config);
+  return unit ? `${valueText} ${unit}` : valueText;
+}
+
+function getColorForRatio(ratio) {
+  const bounded = Math.max(0, Math.min(1, ratio));
+  const hue = 210 - bounded * 200;
+  const saturation = 82;
+  const lightness = 78 - bounded * 22;
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
+
+function getNumericRatio(value, min, max) {
+  if (!Number.isFinite(value) || !Number.isFinite(min) || !Number.isFinite(max)) {
+    return null;
+  }
+  if (Math.abs(max - min) < 1e-9) return 0.5;
+  return (value - min) / (max - min);
+}
+
+function clearEITCellStyles() {
+  eitRegistry.forEach(({ cell }) => {
+    cell.classList.remove(
+      "eit-colored",
+      "eit-dimmed",
+      "eit-focus",
+      "eit-no-data",
+      "eit-out-range",
+    );
+    cell.style.removeProperty("--eit-cell-color");
+  });
+}
+
+function updateEITLegend({
+  visible,
+  title = "",
+  note = "",
+  min = null,
+  max = null,
+  mid = null,
+}) {
+  if (!eitUI) return;
+  // Legend elements may not exist in inline layout
+  if (!eitUI.legend) return;
+  eitUI.legend.hidden = !visible;
+  if (!visible) return;
+
+  if (eitUI.legendTitle) eitUI.legendTitle.textContent = title;
+  if (eitUI.legendNote) eitUI.legendNote.textContent = note;
+  if (eitUI.legendMin) eitUI.legendMin.textContent = min ?? "N/A";
+  if (eitUI.legendMid) eitUI.legendMid.textContent = mid ?? "N/A";
+  if (eitUI.legendMax) eitUI.legendMax.textContent = max ?? "N/A";
+  if (eitUI.legendBar) {
+    eitUI.legendBar.style.background =
+      `linear-gradient(90deg, ${getColorForRatio(0)} 0%, ${getColorForRatio(0.5)} 50%, ${getColorForRatio(1)} 100%)`;
+  }
+}
+
+function getStoredNumericRange(propertyKey, minBound, maxBound) {
+  const stored = eitState.numericRanges.get(propertyKey);
+  if (!stored) return { min: minBound, max: maxBound };
+  const min = Math.max(minBound, Math.min(stored.min, maxBound));
+  const max = Math.max(minBound, Math.min(stored.max, maxBound));
+  if (min > max) return { min: minBound, max: maxBound };
+  return { min, max };
+}
+
+function setPropertyNote(message) {
+  if (!eitUI?.propertyNote) return;
+  eitUI.propertyNote.textContent = message || "";
+}
+
+function syncSliderVisuals(bounds, selected) {
+  if (!eitUI || !bounds || !selected) return;
+  const range = Math.max(bounds.max - bounds.min, 1e-9);
+  const minPct = ((selected.min - bounds.min) / range) * 100;
+  const maxPct = ((selected.max - bounds.min) / range) * 100;
+  eitUI.sliderFill.style.left = `${Math.max(0, Math.min(100, minPct))}%`;
+  eitUI.sliderFill.style.width =
+    `${Math.max(0, Math.min(100, maxPct) - Math.max(0, Math.min(100, minPct)))}%`;
+}
+
+function syncNumericSlider(config, bounds, selected) {
+  if (!eitUI) return;
+  if (!bounds || !Number.isFinite(bounds.min) || !Number.isFinite(bounds.max)) {
+    eitUI.sliderSection.hidden = true;
+    return;
+  }
+
+  eitUI.sliderSection.hidden = false;
+  eitUI.sliderBounds = bounds;
+  const rangeSpan = bounds.max - bounds.min;
+  if (Math.abs(rangeSpan) < 1e-9) {
+    eitUI.selectedMin.textContent = formatEITValue(bounds.min, config, true);
+    eitUI.selectedMax.textContent = formatEITValue(bounds.max, config, true);
+    eitUI.rangeMinInput.disabled = true;
+    eitUI.rangeMaxInput.disabled = true;
+    eitUI.sliderFill.style.left = "0%";
+    eitUI.sliderFill.style.width = "100%";
+    return;
+  }
+  eitUI.rangeMinInput.disabled = false;
+  eitUI.rangeMaxInput.disabled = false;
+
+  let step = config.digits === 0 ? 1 : 1 / Math.pow(10, Math.min(config.digits || 2, 3));
+  if (rangeSpan > 0 && rangeSpan < step) {
+    step = Math.max(rangeSpan / 200, 1e-4);
+  }
+
+  const minInput = eitUI.rangeMinInput;
+  const maxInput = eitUI.rangeMaxInput;
+  minInput.min = String(bounds.min);
+  minInput.max = String(bounds.max);
+  minInput.step = String(step);
+  maxInput.min = String(bounds.min);
+  maxInput.max = String(bounds.max);
+  maxInput.step = String(step);
+  minInput.value = String(selected.min);
+  maxInput.value = String(selected.max);
+
+  eitUI.selectedMin.textContent = formatEITValue(selected.min, config, true);
+  eitUI.selectedMax.textContent = formatEITValue(selected.max, config, true);
+  syncSliderVisuals(bounds, selected);
+}
+
+function setEITPanelOpen(open) {
+  if (!eitUI) return;
+  eitPanelOpen = Boolean(open);
+  eitUI.propertyTrigger.setAttribute("aria-expanded", eitPanelOpen ? "true" : "false");
+  if (eitPanelOpen) {
+    eitUI.propertyPanel.classList.add("eit-panel-visible");
+  } else {
+    eitUI.propertyPanel.classList.remove("eit-panel-visible");
+  }
+}
+
+function syncEITControls(config) {
+  if (!eitUI) return;
+  // Update trigger label with current unit
+  if (eitUI.currentProperty && config) {
+    const unit = getEffectiveUnit(config);
+    eitUI.currentProperty.textContent = unit
+      ? `${config.label} ${unit}`
+      : config.label;
+  }
+  // Sync chips — update unit display on each chip
+  if (eitUI.chips) {
+    eitUI.chips.forEach((chip) => {
+      const isActive = chip.dataset.property === eitState.property;
+      chip.classList.toggle("active", isActive);
+      // Update chip unit text if this chip has units
+      const chipConfig = EIT_PROPERTY_MAP.get(chip.dataset.property);
+      if (chipConfig?.units && chipConfig.units.length > 1) {
+        const unitSpan = chip.querySelector(".eit-chip-unit");
+        if (unitSpan) {
+          const currentUnit = getEffectiveUnit(chipConfig);
+          unitSpan.textContent = currentUnit;
+        }
+      }
+    });
+  }
+  // Sync mode buttons
+  eitUI.modeButtons.forEach((btn) => {
+    const isActive = btn.dataset.mode === eitState.mode;
+    btn.classList.toggle("active", isActive);
+    btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
+  // Sync mode slider position
+  syncModeSlider();
+}
+
+function syncModeSlider() {
+  if (!eitUI || !eitUI.modeSlider) return;
+  const activeBtn = eitUI.modeButtons.find((btn) => btn.classList.contains("active"));
+  if (!activeBtn) return;
+  const group = activeBtn.parentElement;
+  if (!group) return;
+  const groupRect = group.getBoundingClientRect();
+  const btnRect = activeBtn.getBoundingClientRect();
+  const offsetX = btnRect.left - groupRect.left - 3; // 3px = padding
+  eitUI.modeSlider.style.width = `${btnRect.width}px`;
+  eitUI.modeSlider.style.transform = `translateX(${offsetX}px)`;
+}
+
+function applyCategoryEIT(config) {
+  if (!eitUI) return;
+  eitUI.sliderSection.hidden = true;
+  setPropertyNote("Category is discrete. Use legend chips below for category-only focus.");
+  updateEITLegend({ visible: false });
+}
+
+function applyNumericEIT(config) {
+  if (!eitUI) return;
+
+  const rows = eitRegistry.map((entry) => ({
+    entry,
+    value: entry.metrics[config.key],
+  }));
+  const numericValues = rows
+    .map((row) => row.value)
+    .filter((value) => Number.isFinite(value))
+    .sort((a, b) => a - b);
+
+  if (!numericValues.length) {
+    rows.forEach(({ entry }) => {
+      entry.cell.classList.add("eit-no-data", "eit-dimmed");
+    });
+    eitUI.sliderSection.hidden = true;
+    setPropertyNote("No usable numeric data for this property in current dataset.");
+    updateEITLegend({
+      visible: true,
+      title: `${config.label} Range`,
+      note: "No usable data in current dataset",
+      min: "N/A",
+      mid: "N/A",
+      max: "N/A",
+    });
+    return;
+  }
+
+  const min = numericValues[0];
+  const max = numericValues[numericValues.length - 1];
+  const selected = getStoredNumericRange(config.key, min, max);
+  eitState.numericRanges.set(config.key, selected);
+  syncNumericSlider(config, { min, max }, selected);
+  setPropertyNote(
+    `Selected window: ${formatEITValue(selected.min, config, true)} → ${formatEITValue(selected.max, config, true)}`,
+  );
+  let inRangeCount = 0;
+  const isFilter = eitState.mode === "filter";
+
+  // Single pass: compute and apply state for each cell using toggle
+  rows.forEach(({ entry, value }) => {
+    const cl = entry.cell.classList;
+    const hasData = Number.isFinite(value);
+    const inRange = hasData && value >= selected.min && value <= selected.max;
+
+    if (hasData) {
+      const ratio = getNumericRatio(value, min, max);
+      // Only set color property (avoid redundant style writes)
+      entry.cell.style.setProperty("--eit-cell-color", getColorForRatio(ratio));
+    }
+
+    if (inRange) inRangeCount += 1;
+
+    // Toggle classes in one batch — no clear required
+    cl.toggle("eit-colored", hasData);
+    cl.toggle("eit-no-data", !hasData);
+    cl.toggle("eit-dimmed", !hasData || (isFilter && !inRange));
+    cl.toggle("eit-focus", inRange);
+    cl.toggle("eit-out-range", hasData && !inRange && !isFilter);
+  });
+
+  updateEITLegend({
+    visible: true,
+    title: config.label,
+    note: `${inRangeCount}/${numericValues.length} in selected range`,
+    min: formatEITValue(selected.min, config, true),
+    mid: "Selected",
+    max: formatEITValue(selected.max, config, true),
+  });
+}
+
+function applyEIT(tableContainer) {
+  if (!tableContainer) return;
+  const config = EIT_PROPERTY_MAP.get(eitState.property) || EIT_PROPERTY_CONFIG[0];
+  if (!config) return;
+
+  if (config.type === "category" && eitState.mode === "filter") {
+    eitState.mode = "color";
+  }
+
+  syncEITControls(config);
+
+  lockLegendInteractions = config.type !== "category";
+  tableContainer.classList.toggle("eit-active", lockLegendInteractions);
+
+  if (lockLegendInteractions) {
+    activeLegendCategory = null;
+    clearLegendSelection(tableContainer);
+    clearHighlights(tableContainer);
+  }
+
+  if (config.type === "category") {
+    // Clear numeric-specific styles/classes only when resetting to Category
+    clearEITCellStyles();
+    applyCategoryEIT(config);
+  } else {
+    // DO NOT invoke clearEITCellStyles() here to prevent extreme layout thrashing and 
+    // forced recalculation of 118 cell transitions. applyNumericEIT inherently toggles 
+    // all classes and overwrites strictly what's necessary, resulting in butter-smooth FPS.
+    applyNumericEIT(config);
+  }
+}
+
+function ensureEITController(tableContainer) {
+  if (!tableContainer) return;
+
+  let root = document.getElementById("eit-controller");
+  if (!root) {
+    root = document.createElement("section");
+    root.id = "eit-controller";
+    root.className = "eit-controller";
+    root.setAttribute("aria-label", "Element Information Toggle");
+
+    // Build property chips HTML
+    const chipsHTML = EIT_PROPERTY_CONFIG.map((config) => {
+      const hasMultiUnits = config.units && config.units.length > 1;
+      const displayUnit = getEffectiveUnit(config);
+      const unitSpan = displayUnit
+        ? `<span class="eit-chip-unit">${displayUnit}</span>`
+        : "";
+      const label = `${config.label}${unitSpan}`;
+      const extraAttrs = hasMultiUnits ? ` data-has-units="true" title="Click again to change unit"` : "";
+      return `<button type="button" class="eit-chip${config.key === "category" ? " active" : ""}" data-property="${config.key}"${extraAttrs}>${label}</button>`;
+    }).join("");
+
+    root.innerHTML = `
+      <button type="button" class="eit-property-trigger" id="eit-property-trigger" aria-controls="eit-property-panel" aria-expanded="false">
+        <span class="eit-current-property" id="eit-current-property">Category</span>
+        <span class="eit-trigger-caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="eit-slider-section" id="eit-slider-section" hidden>
+        <span id="eit-selected-min"></span>
+        <div class="eit-dual-slider" id="eit-dual-slider">
+          <div class="eit-slider-track"></div>
+          <div class="eit-slider-fill" id="eit-slider-fill"></div>
+          <input type="range" id="eit-range-min" class="eit-range-input eit-range-input-min" />
+          <input type="range" id="eit-range-max" class="eit-range-input eit-range-input-max" />
+        </div>
+        <span id="eit-selected-max"></span>
+      </div>
+      <div class="eit-mode-group" role="group" aria-label="Visualization mode">
+        <div class="eit-mode-slider" id="eit-mode-slider"></div>
+        <button type="button" class="eit-mode-btn active" data-mode="color" aria-pressed="true">Color</button>
+        <button type="button" class="eit-mode-btn" data-mode="filter" aria-pressed="false">Filter</button>
+      </div>
+      <button type="button" class="eit-reset-btn" id="eit-reset-btn">Reset</button>
+      <div class="eit-property-panel" id="eit-property-panel">
+        <div class="eit-property-chips" id="eit-property-chips">
+          ${chipsHTML}
+        </div>
+      </div>
+      <div class="eit-property-note" id="eit-property-note" style="display:none"></div>
+    `;
+
+    // Hidden select for backwards compat
+    const hiddenSelect = document.createElement("select");
+    hiddenSelect.id = "eit-property-select";
+    hiddenSelect.style.display = "none";
+    root.appendChild(hiddenSelect);
+  }
+
+  if (root.parentElement !== tableContainer) {
+    tableContainer.appendChild(root);
+  }
+  tableContainer.classList.add("has-eit");
+
+  eitUI = {
+    root,
+    propertyTrigger: root.querySelector("#eit-property-trigger"),
+    propertyPanel: root.querySelector("#eit-property-panel"),
+    currentProperty: root.querySelector("#eit-current-property"),
+    tip: null,
+    propertySelect: root.querySelector("#eit-property-select"),
+    chips: Array.from(root.querySelectorAll(".eit-chip")),
+    sliderSection: root.querySelector("#eit-slider-section"),
+    selectedMin: root.querySelector("#eit-selected-min"),
+    selectedMax: root.querySelector("#eit-selected-max"),
+    sliderFill: root.querySelector("#eit-slider-fill"),
+    rangeMinInput: root.querySelector("#eit-range-min"),
+    rangeMaxInput: root.querySelector("#eit-range-max"),
+    propertyNote: root.querySelector("#eit-property-note"),
+    modeButtons: Array.from(root.querySelectorAll(".eit-mode-btn")),
+    modeSlider: root.querySelector("#eit-mode-slider"),
+    resetButton: root.querySelector("#eit-reset-btn"),
+    closeButton: root.querySelector("#eit-panel-close"),
+    legend: root.querySelector("#eit-legend"),
+    legendTitle: root.querySelector("#eit-legend-title"),
+    legendNote: root.querySelector("#eit-legend-note"),
+    legendBar: root.querySelector("#eit-legend-bar"),
+    legendMin: root.querySelector("#eit-legend-min"),
+    legendMid: root.querySelector("#eit-legend-mid"),
+    legendMax: root.querySelector("#eit-legend-max"),
+  };
+
+  // Populate hidden select (backwards compat)
+  eitUI.propertySelect.innerHTML = "";
+  EIT_PROPERTY_CONFIG.forEach((config) => {
+    const option = document.createElement("option");
+    option.value = config.key;
+    option.textContent = config.unit ? `${config.label} (${config.unit})` : config.label;
+    eitUI.propertySelect.appendChild(option);
+  });
+
+  if (!root.dataset.bound) {
+    // Trigger toggles dropdown
+    eitUI.propertyTrigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setEITPanelOpen(!eitPanelOpen);
+    });
+    // Prevent clicks inside panel from closing it
+    eitUI.propertyPanel.addEventListener("click", (event) => {
+      event.stopPropagation();
+    });
+    // Property chips — click active chip to cycle unit, click inactive to switch property
+    eitUI.chips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        const clickedProperty = chip.dataset.property;
+        if (clickedProperty === eitState.property) {
+          // Re-clicking active property → cycle unit
+          const config = EIT_PROPERTY_MAP.get(clickedProperty);
+          if (config?.units && config.units.length > 1) {
+            cycleUnit(config);
+            applyEIT(tableContainer);
+          }
+          // Don't close the panel so user can keep cycling
+          return;
+        }
+        eitState.property = clickedProperty;
+        applyEIT(tableContainer);
+        setEITPanelOpen(false);
+      });
+    });
+    // Range sliders — FAST PATH using requestAnimationFrame
+    // Instead of calling applyEIT (which syncs controls, clears classes,
+    // recomputes colors, updates legend), we use a dedicated function that
+    // ONLY toggles the 3 range-dependent classes on each cell.
+    let eitSliderRafId = null;
+    let eitSliderPending = null; // { min, max, config }
+
+    function updateCellRangeClasses(selMin, selMax, config) {
+      const isFilter = eitState.mode === "filter";
+      let inRangeCount = 0;
+      const numericCount = eitRegistry.reduce((n, e) => n + (Number.isFinite(e.metrics[config.key]) ? 1 : 0), 0);
+
+      for (let i = 0, len = eitRegistry.length; i < len; i++) {
+        const entry = eitRegistry[i];
+        const value = entry.metrics[config.key];
+        if (!Number.isFinite(value)) continue;
+        const inRange = value >= selMin && value <= selMax;
+        if (inRange) inRangeCount++;
+        const cl = entry.cell.classList;
+        cl.toggle("eit-dimmed", isFilter && !inRange);
+        cl.toggle("eit-focus", inRange);
+        cl.toggle("eit-out-range", !inRange && !isFilter);
+      }
+
+      setPropertyNote(
+        `Selected window: ${formatEITValue(selMin, config, true)} → ${formatEITValue(selMax, config, true)}`,
+      );
+      updateEITLegend({
+        visible: true,
+        title: config.label,
+        note: `${inRangeCount}/${numericCount} in selected range`,
+        min: formatEITValue(selMin, config, true),
+        mid: "Selected",
+        max: formatEITValue(selMax, config, true),
+      });
+    }
+
+    const scheduleRangeUpdate = () => {
+      if (eitSliderRafId) return;
+      eitSliderRafId = requestAnimationFrame(() => {
+        eitSliderRafId = null;
+        if (eitSliderPending) {
+          updateCellRangeClasses(eitSliderPending.min, eitSliderPending.max, eitSliderPending.config);
+          eitSliderPending = null;
+        }
+      });
+    };
+
+    eitUI.rangeMinInput.addEventListener("input", () => {
+      const config = EIT_PROPERTY_MAP.get(eitState.property);
+      if (!config || config.type !== "numeric") return;
+      const step = Number.parseFloat(eitUI.rangeMinInput.step) || 0;
+      let minValue = Number.parseFloat(eitUI.rangeMinInput.value);
+      let maxValue = Number.parseFloat(eitUI.rangeMaxInput.value);
+      if (minValue > maxValue - step) {
+        minValue = maxValue - step;
+        eitUI.rangeMinInput.value = String(minValue);
+      }
+      eitState.numericRanges.set(config.key, { min: minValue, max: maxValue });
+      // Immediate lightweight visual sync
+      syncSliderVisuals(eitUI.sliderBounds, { min: minValue, max: maxValue });
+      eitUI.selectedMin.textContent = formatEITValue(minValue, config, true);
+      // Schedule fast cell class updates
+      eitSliderPending = { min: minValue, max: maxValue, config };
+      scheduleRangeUpdate();
+    });
+    eitUI.rangeMaxInput.addEventListener("input", () => {
+      const config = EIT_PROPERTY_MAP.get(eitState.property);
+      if (!config || config.type !== "numeric") return;
+      const step = Number.parseFloat(eitUI.rangeMaxInput.step) || 0;
+      let minValue = Number.parseFloat(eitUI.rangeMinInput.value);
+      let maxValue = Number.parseFloat(eitUI.rangeMaxInput.value);
+      if (maxValue < minValue + step) {
+        maxValue = minValue + step;
+        eitUI.rangeMaxInput.value = String(maxValue);
+      }
+      eitState.numericRanges.set(config.key, { min: minValue, max: maxValue });
+      // Immediate lightweight visual sync
+      syncSliderVisuals(eitUI.sliderBounds, { min: minValue, max: maxValue });
+      eitUI.selectedMax.textContent = formatEITValue(maxValue, config, true);
+      // Schedule fast cell class updates
+      eitSliderPending = { min: minValue, max: maxValue, config };
+      scheduleRangeUpdate();
+    });
+    // Mode buttons
+    eitUI.modeButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        eitState.mode = button.dataset.mode === "filter" ? "filter" : "color";
+        applyEIT(tableContainer);
+      });
+    });
+    // Reset
+    eitUI.resetButton.addEventListener("click", () => {
+      resetEITState();
+      applyEIT(tableContainer);
+    });
+    // Close on outside click
+    document.addEventListener("click", (event) => {
+      if (!eitUI || !eitUI.root.contains(event.target)) {
+        setEITPanelOpen(false);
+      }
+    });
+    root.dataset.bound = "true";
+  }
+
+  applyEIT(tableContainer);
+  if (typeof window._scalePeriodicTable === "function") {
+    requestAnimationFrame(() => {
+      window._scalePeriodicTable();
+    });
+  }
+}
+
 function createLegend(container) {
   const legendContainer = document.createElement("div");
   legendContainer.id = "table-legend";
@@ -58,8 +818,8 @@ function createLegend(container) {
     { name: "Actinide", class: "actinide" },
     // Row 3 (2 wider items)
     {
-      name: "Reactive nonmetal",
-      class: "reactive-nonmetal",
+      name: "Other nonmetal",
+      class: "other-nonmetal",
       layoutClass: "legend-wide-left",
     },
     {
@@ -73,6 +833,10 @@ function createLegend(container) {
     item.classList.add("legend-item");
     if (cat.layoutClass) item.classList.add(cat.layoutClass);
     item.setAttribute("data-category", cat.class);
+    item.setAttribute("role", "button");
+    item.setAttribute("tabindex", "0");
+    item.setAttribute("aria-pressed", "false");
+    item.setAttribute("aria-label", `Toggle ${cat.name} highlight`);
     const swatch = document.createElement("div");
     swatch.className = `legend-swatch ${cat.class}`;
     swatch.style.pointerEvents = "none";
@@ -82,28 +846,35 @@ function createLegend(container) {
     item.appendChild(swatch);
     item.appendChild(label);
     item.addEventListener("mouseenter", () => {
+      if (lockLegendInteractions) return;
       if (activeLegendCategory) return;
       highlightCategory(container, cat.class);
     });
     item.addEventListener("mouseleave", () => {
+      if (lockLegendInteractions) return;
       if (activeLegendCategory) return;
       clearHighlights(container);
     });
-    item.addEventListener("click", (e) => {
-      e.stopPropagation();
+    const toggleLegendFilter = () => {
+      if (lockLegendInteractions) return;
       if (activeLegendCategory === cat.class) {
         activeLegendCategory = null;
         item.classList.remove("active");
+        item.setAttribute("aria-pressed", "false");
         clearHighlights(container);
       } else {
-        container
-          .querySelectorAll(".legend-item.active")
-          .forEach((el) => el.classList.remove("active"));
+        clearLegendSelection(container);
         activeLegendCategory = cat.class;
         item.classList.add("active");
+        item.setAttribute("aria-pressed", "true");
         highlightCategory(container, cat.class);
       }
+    };
+    item.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleLegendFilter();
     });
+    bindKeyboardActivation(item, toggleLegendFilter);
     legendContainer.appendChild(item);
   });
   container.appendChild(legendContainer);
@@ -111,6 +882,10 @@ function createLegend(container) {
 
 // ===== Periodic Table Grid Generation =====
 export function buildPeriodicTable(tableContainer) {
+  resetEITRegistry();
+  resetEITState();
+  lockLegendInteractions = false;
+
   const grid = {};
   elements.forEach((element) => {
     // Range blocks (La-Lu, Ac-Lr) skip phase calculation but still enter grid
@@ -149,6 +924,8 @@ export function buildPeriodicTable(tableContainer) {
       const cell = document.createElement("div");
       if (element) {
         cell.classList.add("element");
+        cell.setAttribute("role", "button");
+        cell.setAttribute("tabindex", "0");
         if (element.category) {
           const catClass = normalizeCategoryClass(element.category
             .toLowerCase()
@@ -164,20 +941,37 @@ export function buildPeriodicTable(tableContainer) {
         // Range blocks (La-Lu, Ac-Lr): toggle category highlight instead of modal
         if (element.symbol === "La-Lu" || element.symbol === "Ac-Lr") {
           cell.classList.add("range-block");
-          cell.addEventListener("click", () => {
-            const catClass = element.symbol === "La-Lu" ? "lanthanide" : "actinide";
+          const catClass = element.symbol === "La-Lu" ? "lanthanide" : "actinide";
+          const toggleRangeHighlight = () => {
+            if (lockLegendInteractions) return;
             if (activeLegendCategory === catClass) {
               activeLegendCategory = null;
-              tableContainer.querySelectorAll(".legend-item.active").forEach((el) => el.classList.remove("active"));
+              clearLegendSelection(tableContainer);
               clearHighlights(tableContainer);
             } else {
-              tableContainer.querySelectorAll(".legend-item.active").forEach((el) => el.classList.remove("active"));
+              clearLegendSelection(tableContainer);
               activeLegendCategory = catClass;
+              setLegendSelection(tableContainer, catClass);
               highlightCategory(tableContainer, catClass);
             }
-          });
+          };
+          cell.setAttribute(
+            "aria-label",
+            element.symbol === "La-Lu"
+              ? "Toggle lanthanide highlight"
+              : "Toggle actinide highlight",
+          );
+          cell.addEventListener("click", toggleRangeHighlight);
+          bindKeyboardActivation(cell, toggleRangeHighlight);
         } else {
-          cell.addEventListener("click", () => showModal(element));
+          const openElementModal = () => showModal(element);
+          cell.setAttribute(
+            "aria-label",
+            `${element.name} (${element.symbol}), atomic number ${element.number}`,
+          );
+          cell.addEventListener("click", openElementModal);
+          bindKeyboardActivation(cell, openElementModal);
+          registerEITElementCell(cell, element);
         }
       } else {
         cell.classList.add("empty");
@@ -197,6 +991,12 @@ export function buildPeriodicTable(tableContainer) {
   lanthanides.forEach((element, index) => {
     const cell = document.createElement("div");
     cell.classList.add("element", "lanthanide");
+    cell.setAttribute("role", "button");
+    cell.setAttribute("tabindex", "0");
+    cell.setAttribute(
+      "aria-label",
+      `${element.name} (${element.symbol}), atomic number ${element.number}`,
+    );
     if (element.category) {
       const catClass = normalizeCategoryClass(element.category
         .toLowerCase()
@@ -209,7 +1009,10 @@ export function buildPeriodicTable(tableContainer) {
               <span class="symbol">${element.symbol}</span>
               <span class="name">${element.name}</span>
           `;
-    cell.addEventListener("click", () => showModal(element));
+    const openElementModal = () => showModal(element);
+    cell.addEventListener("click", openElementModal);
+    bindKeyboardActivation(cell, openElementModal);
+    registerEITElementCell(cell, element);
     cell.style.gridRow = 9;
     cell.style.gridColumn = 4 + index;
     tableContainer.appendChild(cell);
@@ -217,6 +1020,12 @@ export function buildPeriodicTable(tableContainer) {
   actinides.forEach((element, index) => {
     const cell = document.createElement("div");
     cell.classList.add("element", "actinide");
+    cell.setAttribute("role", "button");
+    cell.setAttribute("tabindex", "0");
+    cell.setAttribute(
+      "aria-label",
+      `${element.name} (${element.symbol}), atomic number ${element.number}`,
+    );
     if (element.category) {
       const catClass = normalizeCategoryClass(element.category
         .toLowerCase()
@@ -229,11 +1038,15 @@ export function buildPeriodicTable(tableContainer) {
               <span class="symbol">${element.symbol}</span>
               <span class="name">${element.name}</span>
           `;
-    cell.addEventListener("click", () => showModal(element));
+    const openElementModal = () => showModal(element);
+    cell.addEventListener("click", openElementModal);
+    bindKeyboardActivation(cell, openElementModal);
+    registerEITElementCell(cell, element);
     cell.style.gridRow = 10;
     cell.style.gridColumn = 4 + index;
     tableContainer.appendChild(cell);
   });
+  ensureEITController(tableContainer);
   const hash = window.location.hash.toLowerCase();
   if (hash === "#pb" || hash === "#lead") {
     const leadElement = elements.find((el) => el.symbol === "Pb");
@@ -247,7 +1060,7 @@ export function buildPeriodicTable(tableContainer) {
 let modal, modalClose, modalSymbol, modalName, modalNumber, modalCategory,
   modalPhase, modalCategoryDisplay, modalConfigLarge, modalDiscovery,
   modalEtymology, modalDescription, modalDensity, modalMelt, modalBoil,
-  modalNegativity, modalRadius, modalIonization, modalWatermark,
+  modalNegativity, modalRadius, modalIonization, modalElectronAffinity, modalWatermark,
   atomContainer, modalCharge, modalP, modalE, modalN, modalPeriod,
   modalGroup, modalCompounds, modalUses, modalHazards, modalShells,
   eduNames, eduIsotopes, eduCardsContainer;
@@ -286,14 +1099,14 @@ export function reRenderCurrentAtomModal() {
 }
 
 function getElementCategory(element) {
-  if (element.number === 1) return "Reactive nonmetal";
+  if (element.number === 1) return "Other nonmetal";
   const c = element.column;
   const metalloids = [5, 14, 32, 33, 51, 52, 85];
   if (metalloids.includes(element.number)) return "Metalloid";
-  if (c === 18) return "Reactive nonmetal (Noble Gas)";
-  if (c === 17) return "Reactive nonmetal (Halogen)";
+  if (c === 18) return "Other nonmetal (Noble Gas)";
+  if (c === 17) return "Other nonmetal (Halogen)";
   const otherNonmetals = [6, 7, 8, 15, 16, 34];
-  if (otherNonmetals.includes(element.number)) return "Reactive nonmetal";
+  if (otherNonmetals.includes(element.number)) return "Other nonmetal";
   return "Metal";
 }
 function calculateShells(element) {
@@ -323,6 +1136,127 @@ function calculateShells(element) {
     return `${element.row} shells`;
   }
   return shells.join(", ");
+}
+
+// ===== L3 Stat Item: Clickable Unit Conversion =====
+// Tracks the current unit index per metric key so cycling persists during a modal session
+const l3UnitState = { ie: 0, ea: 0, melt: 0, boil: 0 };
+
+const L3_UNIT_CONFIGS = {
+  ie: {
+    units: [
+      { unit: "kJ/mol", digits: 0 },
+      { unit: "eV", digits: 2 },
+    ],
+    parse(raw) {
+      if (!raw || raw === "N/A") return null;
+      const s = String(raw).replace(/−/g, "-").replace(/,/g, "");
+      if (/ev/i.test(s)) {
+        const num = parseFloat(s);
+        return Number.isFinite(num) ? num * 96.485 : null; // convert eV → kJ/mol (base)
+      }
+      const m = s.match(/-?[\d.]+/);
+      return m ? parseFloat(m[0]) : null;
+    },
+    convert(baseVal, unitIdx) {
+      if (!Number.isFinite(baseVal)) return "N/A";
+      if (unitIdx === 1) return (baseVal / 96.485).toFixed(2);
+      return Math.round(baseVal).toString();
+    },
+  },
+  ea: {
+    units: [
+      { unit: "kJ/mol", digits: 1 },
+      { unit: "eV", digits: 2 },
+    ],
+    parse(raw) {
+      if (!raw || raw === "N/A") return null;
+      const s = String(raw).replace(/−/g, "-").replace(/,/g, "");
+      const m = s.match(/-?[\d.]+/);
+      return m ? parseFloat(m[0]) : null;
+    },
+    convert(baseVal, unitIdx) {
+      if (!Number.isFinite(baseVal)) return "N/A";
+      if (unitIdx === 1) return (baseVal / 96.485).toFixed(2);
+      return baseVal.toFixed(1);
+    },
+  },
+  melt: {
+    units: [
+      { unit: "°C", digits: 1 },
+      { unit: "°F", digits: 1 },
+      { unit: "K", digits: 1 },
+    ],
+    parse(raw) {
+      if (!raw || typeof raw !== "string") return null;
+      if (raw.includes("—") || raw.includes("Pressurized") || raw === "N/A" || raw.includes("Unknown") || raw.includes("Sublimes")) return null;
+      const s = raw.replace(/−/g, "-").replace(/,/g, "").replace(/°C/g, "").trim();
+      const m = s.match(/-?[\d.]+/);
+      return m ? parseFloat(m[0]) : null;
+    },
+    convert(baseVal, unitIdx) {
+      if (!Number.isFinite(baseVal)) return "N/A";
+      if (unitIdx === 1) return (baseVal * 9 / 5 + 32).toFixed(1);
+      if (unitIdx === 2) return (baseVal + 273.15).toFixed(1);
+      return baseVal.toFixed(1);
+    },
+  },
+  boil: {
+    // Same conversion logic as melt
+    get units() { return L3_UNIT_CONFIGS.melt.units; },
+    parse(raw) { return L3_UNIT_CONFIGS.melt.parse(raw); },
+    convert(baseVal, unitIdx) { return L3_UNIT_CONFIGS.melt.convert(baseVal, unitIdx); },
+  },
+};
+
+function setupL3UnitConversion(blueCard, rawData) {
+  if (!blueCard) return;
+  const items = blueCard.querySelectorAll(".l3-stat-item.l3-clickable[data-metric]");
+  items.forEach((item) => {
+    const metric = item.dataset.metric;
+    const cfg = L3_UNIT_CONFIGS[metric];
+    if (!cfg) return;
+    const baseVal = cfg.parse(rawData[metric]);
+    // Store base value on the element for click handler
+    item._l3Base = baseVal;
+    item._l3Metric = metric;
+    // Set cursor
+    item.style.cursor = "pointer";
+    // Remove old listener if any (use clone trick)
+    const newItem = item.cloneNode(true);
+    newItem._l3Base = baseVal;
+    newItem._l3Metric = metric;
+    newItem.style.cursor = "pointer";
+    item.parentNode.replaceChild(newItem, item);
+
+    // Apply current persisted unit state immediately
+    const currentIdx = l3UnitState[metric] || 0;
+    if (currentIdx > 0) {
+      const valEl = newItem.querySelector(".l3-stat-value");
+      const unitEl = newItem.querySelector(".l3-stat-unit");
+      if (valEl) valEl.textContent = cfg.convert(baseVal, currentIdx);
+      if (unitEl) unitEl.textContent = cfg.units[currentIdx].unit;
+    }
+
+    newItem.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const m = newItem._l3Metric;
+      const c = L3_UNIT_CONFIGS[m];
+      if (!c) return;
+      // Cycle unit
+      l3UnitState[m] = (l3UnitState[m] + 1) % c.units.length;
+      const unitIdx = l3UnitState[m];
+      const val = newItem._l3Base;
+      const valEl = newItem.querySelector(".l3-stat-value");
+      const unitEl = newItem.querySelector(".l3-stat-unit");
+      if (valEl) valEl.textContent = c.convert(val, unitIdx);
+      if (unitEl) unitEl.textContent = c.units[unitIdx].unit;
+      // Micro-animation feedback
+      newItem.style.transition = "transform 0.15s ease";
+      newItem.style.transform = "scale(0.95)";
+      setTimeout(() => { newItem.style.transform = "scale(1)"; }, 150);
+    });
+  });
 }
 
 // ===== Simplified View Population =====
@@ -422,12 +1356,12 @@ function populateSimplifiedView(element) {
   if (greenCard) {
     let typeDisplay = element.category || "Unknown";
     let phaseDisplay = element.phase || "Unknown";
-    
+
     if (window.zperiodVersion === 'new' && v2Data) {
       typeDisplay = v2Data.level1_basic.type || typeDisplay;
       phaseDisplay = v2Data.level1_basic.phaseAtSTP || phaseDisplay;
     }
-    
+
     setText(
       ".green-rectangle .info-row:nth-child(1) .info-value",
       typeDisplay,
@@ -483,7 +1417,7 @@ function populateSimplifiedView(element) {
       if (window.zperiodVersion === 'new' && v2Data) {
         commonIonsText = v2Data.level1_basic.commonIons || "";
       }
-      
+
       const hasNoIons =
         !commonIonsText ||
         /none|n\/a|inert|unknown|does not form/i.test(commonIonsText) ||
@@ -579,8 +1513,16 @@ function populateSimplifiedView(element) {
       let isotopesToDisplay =
         finallyElementData.level2_atomic?.naturalIsotopes?.length > 0
           ? finallyElementData.level2_atomic.naturalIsotopes
-          : [];
-      
+          : finallyElementData.level2_atomic?.naturallyOccurringRadioisotopes?.length > 0
+            ? finallyElementData.level2_atomic.naturallyOccurringRadioisotopes
+            : finallyElementData.level2_atomic?.representativeIsotopes?.length > 0
+              ? finallyElementData.level2_atomic.representativeIsotopes
+              : finallyElementData.level2_atomic?.longestLivedIsotopes?.length > 0
+                ? finallyElementData.level2_atomic.longestLivedIsotopes
+                : finallyElementData.level2_atomic?.mostStableIsotopes?.length > 0
+                  ? finallyElementData.level2_atomic.mostStableIsotopes
+                  : [];
+
       if (window.zperiodVersion === 'new' && v2Data) {
         isotopesToDisplay = v2Data.level2_atomic.naturalIsotopes || [];
       }
@@ -716,6 +1658,7 @@ function populateSimplifiedView(element) {
     let den = finallyElementData.level3_properties?.physical?.density || "";
     let melt = finallyElementData.level3_properties?.physical?.meltingPoint || "";
     let boil = finallyElementData.level3_properties?.physical?.boilingPoint || "";
+    let ea = finallyElementData.level3_properties?.physical?.electronAffinity || "";
 
     if (window.zperiodVersion === 'new' && v2Data) {
       en = v2Data.level3_properties.physical.electronegativity ?? en;
@@ -723,18 +1666,27 @@ function populateSimplifiedView(element) {
       den = v2Data.level3_properties.physical.density || den;
       melt = v2Data.level3_properties.physical.meltingPoint || melt;
       boil = v2Data.level3_properties.physical.boilingPoint || boil;
+      ea = v2Data.level3_properties.physical.electronAffinity || ea;
     }
 
-    setText(".blue-rectangle .l3-stat-item:nth-child(1) .l3-stat-value", formatElectronegativity(en));
-    setText(".blue-rectangle .l3-stat-item:nth-child(2) .l3-stat-value", formatIonization(ie));
-    
+    // New order: Row 1 = IE + EA, Row 2 = EN + Density, Row 3 = Melt + Boil
+    setText(".blue-rectangle .l3-stat-item:nth-child(1) .l3-stat-value", formatIonization(ie));
+
+    const eaDisplay = ea && ea !== "N/A" ? ea.replace(" kJ/mol", "").trim() : "N/A";
+    setText(".blue-rectangle .l3-stat-item:nth-child(2) .l3-stat-value", eaDisplay);
+
+    setText(".blue-rectangle .l3-stat-item:nth-child(3) .l3-stat-value", formatElectronegativity(en));
+
     const densityData = formatDensity(den);
-    setText(".blue-rectangle .l3-stat-item:nth-child(3) .l3-stat-value", densityData.value);
-    const densityUnit = blueCard.querySelector(".l3-stat-item:nth-child(3) .l3-stat-unit");
+    setText(".blue-rectangle .l3-stat-item:nth-child(4) .l3-stat-value", densityData.value);
+    const densityUnit = blueCard.querySelector(".l3-stat-item:nth-child(4) .l3-stat-unit");
     if (densityUnit) densityUnit.textContent = densityData.unit;
-    
-    setText(".blue-rectangle .l3-stat-item:nth-child(4) .l3-stat-value", formatTemp(melt));
-    setText(".blue-rectangle .l3-stat-item:nth-child(5) .l3-stat-value", formatTemp(boil));
+
+    setText(".blue-rectangle .l3-stat-item:nth-child(5) .l3-stat-value", formatTemp(melt));
+    setText(".blue-rectangle .l3-stat-item:nth-child(6) .l3-stat-value", formatTemp(boil));
+
+    // ---- Clickable unit conversion on L3 stat items ----
+    setupL3UnitConversion(blueCard, { ie, ea, melt, boil });
   }
   const redCard = document.querySelector(
     ".red-rectangle .card-info-container",
@@ -797,7 +1749,7 @@ function populateSimplifiedView(element) {
     );
     let discoveredBy = finallyElementData.level4_history_stse?.history?.discoveredBy || "—";
     let namedBy = finallyElementData.level4_history_stse?.history?.namedBy || "—";
-    
+
     if (window.zperiodVersion === 'new' && v2Data) {
       discoveredBy = v2Data.level4_history_stse.history.discoveredBy || "—";
       namedBy = v2Data.level4_history_stse.history.namedBy || "—";
@@ -805,7 +1757,7 @@ function populateSimplifiedView(element) {
 
     setText(".red-rectangle .info-row:nth-child(3) .info-value", discoveredBy);
     setText(".red-rectangle .info-row:nth-child(4) .info-value", namedBy);
-    
+
     const propGridSection = redCard.querySelector(".prop-grid-section");
     if (propGridSection) {
       setStyle(propGridSection, {
@@ -818,14 +1770,14 @@ function populateSimplifiedView(element) {
       if (stseCell) {
         setStyle(stseCell, commonCellStyles);
         const stseContent = findContentDiv(stseCell, "stse");
-        
+
         let stseVal = (finallyElementData.level4_history_stse?.stseContext || []).join("; ");
         if (window.zperiodVersion === 'new' && v2Data) {
-          stseVal = v2Data.level4_history_stse.stseContext && v2Data.level4_history_stse.stseContext.length > 0 
-                    ? v2Data.level4_history_stse.stseContext.join(" • ") 
-                    : "";
+          stseVal = v2Data.level4_history_stse.stseContext && v2Data.level4_history_stse.stseContext.length > 0
+            ? v2Data.level4_history_stse.stseContext.join(" • ")
+            : "";
         }
-        
+
         stseCell.style.display = "flex";
         if (stseContent) {
           setStyle(stseContent, commonContentStyles);
@@ -836,37 +1788,37 @@ function populateSimplifiedView(element) {
           }
         }
       }
-      
+
       const usesCell = propGridSection.querySelector(".prop-cell:nth-child(2)");
       if (usesCell) {
         setStyle(usesCell, commonCellStyles);
         const usesContent = findContentDiv(usesCell, "uses");
-        
+
         let usesVal = (finallyElementData.level4_history_stse?.commonUses || []).join(", ") || "—";
         if (window.zperiodVersion === 'new' && v2Data) {
           usesVal = v2Data.level4_history_stse.commonUses && v2Data.level4_history_stse.commonUses.length > 0
-                    ? v2Data.level4_history_stse.commonUses.join(", ")
-                    : "—";
+            ? v2Data.level4_history_stse.commonUses.join(", ")
+            : "—";
         }
-        
+
         if (usesContent) {
           setStyle(usesContent, commonContentStyles);
           usesContent.textContent = usesVal;
         }
       }
-      
+
       const hazardsCell = propGridSection.querySelector(".prop-cell:nth-child(3)");
       if (hazardsCell) {
         setStyle(hazardsCell, commonCellStyles);
         const hazardsContent = findContentDiv(hazardsCell, "hazards");
-        
+
         let hazardsVal = (finallyElementData.level4_history_stse?.hazards || []).join(", ") || "—";
         if (window.zperiodVersion === 'new' && v2Data) {
           hazardsVal = v2Data.level4_history_stse.hazards && v2Data.level4_history_stse.hazards.length > 0
-                      ? v2Data.level4_history_stse.hazards.join(", ")
-                      : "—";
+            ? v2Data.level4_history_stse.hazards.join(", ")
+            : "—";
         }
-        
+
         if (hazardsContent) {
           setStyle(hazardsContent, commonContentStyles);
           hazardsContent.textContent = hazardsVal;
@@ -878,7 +1830,13 @@ function populateSimplifiedView(element) {
 
 // ===== Show Modal (main element modal) =====
 export function showModal(element) {
+  // Blur the focused element cell so that subsequent space presses
+  // don't re-trigger bindKeyboardActivation → showModal → 3D refresh
+  if (document.activeElement && document.activeElement !== document.body) {
+    document.activeElement.blur();
+  }
   window.currentAtomElement = element;
+  clearHeadlineResizeHandler();
   const finallyElementData = finallyData[element.number] || {};
   element.educational = element.educational || {};
   element.phase = element.phase || finallyElementData.level1_basic?.phaseAtSTP || "";
@@ -970,7 +1928,8 @@ export function showModal(element) {
       }
     };
     setTimeout(resizeFont, 0);
-    window.addEventListener("resize", resizeFont);
+    headlineResizeHandler = resizeFont;
+    window.addEventListener("resize", headlineResizeHandler);
   }
   const elementText = document.querySelector(".element-text");
   const elementName = document.querySelector(".element-name");
@@ -1016,6 +1975,9 @@ export function showModal(element) {
   if (modalRadius) modalRadius.textContent = element.radius || "—";
   if (modalIonization) {
     modalIonization.textContent = finallyElementData.level3_properties?.physical?.firstIonization || "—";
+  }
+  if (modalElectronAffinity) {
+    modalElectronAffinity.textContent = finallyElementData.level3_properties?.physical?.electronAffinity || "—";
   }
   const grp = element.column;
   if (eduNames && modalCharge) {
@@ -1351,9 +2313,9 @@ export function showModal(element) {
     clearCurrentAtom();
     renderScene();
     void atomContainer.offsetWidth;
-    setTimeout(() => {
-      if (typeof THREE === "undefined") return;
+    setTimeout(async () => {
       try {
+        await ensureThreeLibLoaded();
         const contentHeight =
           modal.querySelector(".modal-content").clientHeight;
         if (atomContainer.clientHeight === 0) {
@@ -1670,6 +2632,7 @@ export function initModalUI() {
   modalNegativity = document.getElementById("modal-electronegativity");
   modalRadius = document.getElementById("modal-radius");
   modalIonization = document.getElementById("modal-ionization");
+  modalElectronAffinity = document.getElementById("modal-electron-affinity");
   modalWatermark = document.getElementById("modal-watermark");
   atomContainer = document.getElementById("atom-container");
   modalCharge = document.getElementById("modal-charge");
@@ -1707,42 +2670,24 @@ export function initModalUI() {
     if (level1Content) level1Content.style.display = "block";
   }
 
-  modalClose.addEventListener("click", () => {
+  function closeElementModal() {
     modal.classList.remove("active");
     document.body.classList.remove("hide-nav");
     document.title = "Zperiod";
+    clearHeadlineResizeHandler();
     cleanup3D(true);
     atomContainer.classList.remove("visible");
     resetModalUI();
+  }
+
+  modalClose.addEventListener("click", () => {
+    closeElementModal();
   });
 
   modal.addEventListener("click", (e) => {
     if (window._zperiodIsDragging) return;
     if (e.target === modal) {
-      modal.classList.remove("active");
-      document.body.classList.remove("hide-nav");
-      document.title = "Zperiod";
-      cleanup3D(true);
-      atomContainer.classList.remove("visible");
-      resetModalUI();
+      closeElementModal();
     }
   });
-
-  let currentPrimaryElement = null;
-  const tableContainerEl = document.getElementById("periodic-table");
-  if (tableContainerEl) {
-    tableContainerEl.addEventListener("click", (e) => {
-      const cell = e.target.closest(".element");
-      if (cell && !cell.classList.contains("empty")) {
-        // Range blocks (La-Lu, Ac-Lr) are handled by their own click listeners
-        if (cell.classList.contains("range-block")) return;
-        const number = parseInt(cell.querySelector(".number").textContent);
-        const element = elements.find((el) => el.number === number);
-        if (element) {
-          currentPrimaryElement = element;
-          showModal(element);
-        }
-      }
-    });
-  }
 }

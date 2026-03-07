@@ -3,7 +3,7 @@
 // =============================================================================
 
 export function initPageController(options = {}) {
-  const { onTablePageShown, onToolsPageShown } = options;
+  const { onTablePageShown, onIonsPageShown, onToolsPageShown, onWorksheetPageShown } = options;
 
   const mainContainer = document.getElementById("main-container");
   const blankPage1 = document.getElementById("blank-page-1");
@@ -50,8 +50,16 @@ export function initPageController(options = {}) {
       requestAnimationFrame(onTablePageShown);
     }
 
+    if (page === "ions" && typeof onIonsPageShown === "function") {
+      onIonsPageShown();
+    }
+
     if (page === "blank1" && typeof onToolsPageShown === "function") {
       onToolsPageShown();
+    }
+
+    if (page === "blank2" && typeof onWorksheetPageShown === "function") {
+      onWorksheetPageShown();
     }
   }
 

@@ -1,10 +1,10 @@
 // =============================================================================
-// Three.js 3D Atom Renderer - Extracted from script.js
-// Manages Scene, Camera, Renderer, atom structure, animation loop
-// Zero DOM population logic — only WebGL rendering
+// Three.js 3D Atom Renderer
+// Performance-optimized: nucleus interior culling, geometry/material caching,
+// reusable Vector3 pool, for-loop hot paths, capped DPR
 // =============================================================================
 
-// ===== Module-level state (replaces closure variables) =====
+// ===== Module-level state =====
 let scene, camera, renderer, atomGroup, animationId;
 let electrons = [];
 let introStartTime = 0;
@@ -12,10 +12,138 @@ let isIntroAnimating = false;
 let isTopViewMode = false;
 let initialCameraZ = 16;
 let targetCameraZ = 16;
+
 let _container = null;
+let eventAbortController = null;
+let threeLoadPromise = null;
+
+let raycaster = null;
+let mouse = null;
+let hoveredOrbit = null;
+let orbitHitTargets = [];
+
+// ===== Caches =====
+const geometryCache = new Map();
+let sharedMaterials = null;
+
+// Reusable Vector3 pool — allocated once, zero GC pressure in hot loops
+let _v1 = null;
+let _v2 = null;
+let _v3 = null;
+
+// Direct references to avoid getObjectByName() every frame
+let _nucleusGroupRef = null;
+let _wobbleGroupRef = null;
+
+// ===== Quality profile (segment counts only — trails are always 10) =====
+function getQualityProfile(atomicNumber) {
+  const dm =
+    typeof navigator !== "undefined" && navigator.deviceMemory
+      ? navigator.deviceMemory
+      : 0;
+  const low = dm > 0 && dm <= 4;
+  const heavy = atomicNumber >= 37 || low;
+  return {
+    nucleusSegments: heavy ? 14 : 24,
+    electronSegments: heavy ? 10 : 20,
+    orbitTubularSegments: heavy ? 44 : 80,
+    hitTubularSegments: heavy ? 20 : 32,
+    settleIterations: (atomicNumber >= 73 || low) ? 1 : heavy ? 2 : 4,
+  };
+}
+
+// ===== Geometry cache helpers =====
+function getSphereGeometry(radius, segments) {
+  const key = `s:${radius}:${segments}`;
+  let g = geometryCache.get(key);
+  if (!g) {
+    g = new THREE.SphereGeometry(radius, segments, segments);
+    geometryCache.set(key, g);
+  }
+  return g;
+}
+
+function getTorusGeometry(radius, tube, radial, tubular) {
+  const key = `t:${radius}:${tube}:${radial}:${tubular}`;
+  let g = geometryCache.get(key);
+  if (!g) {
+    g = new THREE.TorusGeometry(radius, tube, radial, tubular);
+    geometryCache.set(key, g);
+  }
+  return g;
+}
+
+// ===== Shared materials (created once) =====
+function ensureSharedMaterials() {
+  if (sharedMaterials) return sharedMaterials;
+  sharedMaterials = {
+    protonMat: new THREE.MeshStandardMaterial({
+      color: 0xff2222,
+      roughness: 0.25,
+      metalness: 0.4,
+      emissive: 0xff0000,
+      emissiveIntensity: 1.5,
+    }),
+    neutronMat: new THREE.MeshStandardMaterial({
+      color: 0x999999,
+      roughness: 0.15,
+      metalness: 0.5,
+      emissive: 0x333333,
+      emissiveIntensity: 0.6,
+    }),
+    electronMat: new THREE.MeshStandardMaterial({
+      color: 0x0000ff,
+      roughness: 0.4,
+      metalness: 0.6,
+    }),
+    hitMat: new THREE.MeshBasicMaterial({ visible: false }),
+  };
+  return sharedMaterials;
+}
+
+// ===== Lazy-load Three.js =====
+export function ensureThreeLibLoaded() {
+  if (typeof window !== "undefined" && window.THREE) {
+    return Promise.resolve(window.THREE);
+  }
+  if (threeLoadPromise) return threeLoadPromise;
+  threeLoadPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector('script[data-zperiod-three="1"]');
+    if (existing) {
+      existing.addEventListener("load", () => resolve(window.THREE));
+      existing.addEventListener("error", () =>
+        reject(new Error("Failed to load script: three.min.js")),
+      );
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "three.min.js";
+    script.async = true;
+    script.dataset.zperiodThree = "1";
+    script.onload = () => resolve(window.THREE);
+    script.onerror = () =>
+      reject(new Error("Failed to load script: three.min.js"));
+    document.body.appendChild(script);
+  });
+  return threeLoadPromise;
+}
+
 
 // ===== Scene Initialization =====
 export function init3DScene(container) {
+  if (typeof window === "undefined" || !window.THREE) {
+    console.error("init3DScene: THREE is not loaded");
+    return;
+  }
+
+  if (!raycaster) raycaster = new window.THREE.Raycaster();
+  if (!mouse) mouse = new window.THREE.Vector2(-1, -1);
+  if (!_v1) {
+    _v1 = new window.THREE.Vector3();
+    _v2 = new window.THREE.Vector3();
+    _v3 = new window.THREE.Vector3();
+  }
+
   _container = container || _container;
   if (renderer) {
     if (
@@ -25,10 +153,7 @@ export function init3DScene(container) {
     ) {
       _container.appendChild(renderer.domElement);
       if (_container.clientWidth > 0 && _container.clientHeight > 0) {
-        renderer.setSize(
-          _container.clientWidth,
-          _container.clientHeight,
-        );
+        renderer.setSize(_container.clientWidth, _container.clientHeight);
       }
     }
     return;
@@ -41,8 +166,7 @@ export function init3DScene(container) {
     scene = new THREE.Scene();
     const width = _container.clientWidth || 400;
     const height = _container.clientHeight || 400;
-    const aspect = width / height;
-    camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.z = 16;
     try {
       renderer = new THREE.WebGLRenderer({
@@ -69,88 +193,78 @@ export function init3DScene(container) {
       }
     }
     renderer.setSize(width, height);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     _container.appendChild(renderer.domElement);
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.4);
-    directionalLight.position.set(10, 10, 10);
-    scene.add(directionalLight);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    dirLight.position.set(10, 10, 10);
+    scene.add(dirLight);
+
     atomGroup = new THREE.Group();
     scene.add(atomGroup);
     atomGroup.rotation.set(0, 0, 0);
+
+    if (eventAbortController) eventAbortController.abort();
+    eventAbortController = new AbortController();
+    const sig = { signal: eventAbortController.signal };
+
     let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
+    let prevPos = { x: 0, y: 0 };
     const canvasEl = renderer.domElement;
+
     canvasEl.addEventListener("mousedown", (e) => {
       isDragging = true;
       isIntroAnimating = false;
-      previousMousePosition = { x: e.offsetX, y: e.offsetY };
+      prevPos = { x: e.offsetX, y: e.offsetY };
       canvasEl.style.cursor = "grabbing";
-    });
+    }, sig);
+
     canvasEl.addEventListener("mousemove", (e) => {
+      const rect = canvasEl.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
       if (!isDragging) return;
-      const deltaMove = {
-        x: e.offsetX - previousMousePosition.x,
-        y: e.offsetY - previousMousePosition.y,
-      };
-      const rotateSpeed = 0.005;
-      atomGroup.rotation.y += deltaMove.x * rotateSpeed;
-      atomGroup.rotation.x += deltaMove.y * rotateSpeed;
-      previousMousePosition = { x: e.offsetX, y: e.offsetY };
-    });
+      const dx = e.offsetX - prevPos.x;
+      const dy = e.offsetY - prevPos.y;
+      atomGroup.rotation.y += dx * 0.005;
+      atomGroup.rotation.x += dy * 0.005;
+      prevPos = { x: e.offsetX, y: e.offsetY };
+    }, sig);
+
     window.addEventListener("mouseup", () => {
       isDragging = false;
       canvasEl.style.cursor = "grab";
-    });
-    canvasEl.addEventListener(
-      "touchstart",
-      (e) => {
-        if (e.touches.length === 1) {
-          isDragging = true;
-          isIntroAnimating = false;
-          previousMousePosition = {
-            x: e.touches[0].pageX,
-            y: e.touches[0].pageY,
-          };
-        }
-      },
-      { passive: false },
-    );
-    canvasEl.addEventListener(
-      "touchmove",
-      (e) => {
-        if (!isDragging || e.touches.length !== 1) return;
-        e.preventDefault();
-        const deltaMove = {
-          x: e.touches[0].pageX - previousMousePosition.x,
-          y: e.touches[0].pageY - previousMousePosition.y,
-        };
-        const rotateSpeed = 0.005;
-        atomGroup.rotation.y += deltaMove.x * rotateSpeed;
-        atomGroup.rotation.x += deltaMove.y * rotateSpeed;
-        previousMousePosition = {
-          x: e.touches[0].pageX,
-          y: e.touches[0].pageY,
-        };
-      },
-      { passive: false },
-    );
-    window.addEventListener("touchend", () => {
-      isDragging = false;
-    });
-    canvasEl.addEventListener(
-      "wheel",
-      (e) => {
-        e.preventDefault();
-        const zoomSpeed = 0.02;
-        camera.position.z += e.deltaY * zoomSpeed;
-        camera.position.z = Math.max(4, Math.min(60, camera.position.z));
-      },
-      { passive: false },
-    );
+    }, sig);
+
+    canvasEl.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 1) {
+        isDragging = true;
+        isIntroAnimating = false;
+        prevPos = { x: e.touches[0].pageX, y: e.touches[0].pageY };
+      }
+    }, { passive: false, signal: eventAbortController.signal });
+
+    canvasEl.addEventListener("touchmove", (e) => {
+      if (!isDragging || e.touches.length !== 1) return;
+      e.preventDefault();
+      const dx = e.touches[0].pageX - prevPos.x;
+      const dy = e.touches[0].pageY - prevPos.y;
+      atomGroup.rotation.y += dx * 0.005;
+      atomGroup.rotation.x += dy * 0.005;
+      prevPos = { x: e.touches[0].pageX, y: e.touches[0].pageY };
+    }, { passive: false, signal: eventAbortController.signal });
+
+    window.addEventListener("touchend", () => { isDragging = false; }, sig);
+
+    canvasEl.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      isIntroAnimating = false;
+      camera.position.z = Math.max(4, Math.min(60, camera.position.z + e.deltaY * 0.02));
+    }, { passive: false, signal: eventAbortController.signal });
+
     canvasEl.style.cursor = "grab";
-    window.addEventListener("resize", onWindowResize, false);
+    window.addEventListener("resize", onWindowResize, sig);
   } catch (error) {
     console.error("Critical error initializing 3D scene:", error);
   }
@@ -163,13 +277,24 @@ export function updateAtomStructure(element) {
     atomGroup.remove(atomGroup.children[0]);
   }
   electrons = [];
+  orbitHitTargets = [];
+  _nucleusGroupRef = null;
+  _wobbleGroupRef = null;
+
   const nucleusGroup = new THREE.Group();
   nucleusGroup.name = "nucleusGroup";
   atomGroup.add(nucleusGroup);
+  _nucleusGroupRef = nucleusGroup;
+
   const wobbleGroup = new THREE.Group();
   wobbleGroup.name = "wobbleGroup";
   atomGroup.add(wobbleGroup);
+  _wobbleGroupRef = wobbleGroup;
+
   const atomicNumber = element.number;
+  const quality = getQualityProfile(atomicNumber);
+
+  // --- Neutron count ---
   let neutronCount;
   if (atomicNumber === 1) {
     neutronCount = 0;
@@ -183,23 +308,13 @@ export function updateAtomStructure(element) {
       neutronCount = atomicNumber;
     }
   }
+
+  const mats = ensureSharedMaterials();
   const particleRadius = 0.6;
-  const protonGeo = new THREE.SphereGeometry(particleRadius, 32, 32);
-  const protonMat = new THREE.MeshStandardMaterial({
-    color: 0xff2222,
-    roughness: 0.25,
-    metalness: 0.4,
-    emissive: 0xff0000,
-    emissiveIntensity: 1.5,
-  });
-  const neutronGeo = new THREE.SphereGeometry(particleRadius, 32, 32);
-  const neutronMat = new THREE.MeshStandardMaterial({
-    color: 0x999999,
-    roughness: 0.15,
-    metalness: 0.5,
-    emissive: 0x333333,
-    emissiveIntensity: 0.6,
-  });
+  const protonGeo = getSphereGeometry(particleRadius, quality.nucleusSegments);
+  const neutronGeo = getSphereGeometry(particleRadius, quality.nucleusSegments);
+
+  // --- Build & shuffle particle list ---
   const particles = [];
   for (let i = 0; i < atomicNumber; i++) particles.push({ type: "proton" });
   for (let i = 0; i < neutronCount; i++) particles.push({ type: "neutron" });
@@ -207,71 +322,96 @@ export function updateAtomStructure(element) {
     const j = Math.floor(Math.random() * (i + 1));
     [particles[i], particles[j]] = [particles[j], particles[i]];
   }
+
+  // --- Position particles using Fibonacci sphere ---
   const phi = Math.PI * (3 - Math.sqrt(5));
   const n = particles.length;
   const clusterScale = Math.pow(n, 1 / 3) * particleRadius * 0.8;
-  particles.forEach((p, i) => {
+  for (let i = 0; i < n; i++) {
+    const p = particles[i];
     const k = i + 0.5;
     const y = 1 - (k / n) * 2;
     const theta = phi * k;
-    const r = Math.sqrt(1 - y * y);
-    const x = Math.cos(theta) * r;
-    const z = Math.sin(theta) * r;
+    const rr = Math.sqrt(1 - y * y);
     p.pos = new THREE.Vector3(
-      x * clusterScale,
-      y * clusterScale,
-      z * clusterScale,
+      Math.cos(theta) * rr * clusterScale + (Math.random() - 0.5) * 0.15,
+      y * clusterScale + (Math.random() - 0.5) * 0.15,
+      Math.sin(theta) * rr * clusterScale + (Math.random() - 0.5) * 0.15,
     );
-    p.pos.x += (Math.random() - 0.5) * 0.15;
-    p.pos.y += (Math.random() - 0.5) * 0.15;
-    p.pos.z += (Math.random() - 0.5) * 0.15;
-    p.vel = new THREE.Vector3(0, 0, 0);
-  });
-  if (particles.length === 2) {
+  }
+
+  // --- Settle physics (for-loop, no forEach) ---
+  if (n === 2) {
     particles[0].pos.set(-0.4, 0, 0);
     particles[1].pos.set(0.4, 0, 0);
-  } else {
+  } else if (n > 2) {
     nucleusGroup.userData.particles = particles;
     nucleusGroup.userData.physicsIterationsRemaining = 0;
-    const repulsionDist = particleRadius * 1.5;
-    const kRepulse = 0.2;
-    const kCenter = 0.1;
-    const vForce = new THREE.Vector3();
-    const vDiff = new THREE.Vector3();
-    const vTemp = new THREE.Vector3();
-    for (let i = 0; i < 5; i++) {
-      particles.forEach((p1, idx1) => {
-        vForce.set(0, 0, 0);
-        vTemp.copy(p1.pos).multiplyScalar(-kCenter);
-        vForce.add(vTemp);
-        particles.forEach((p2, idx2) => {
-          if (idx1 === idx2) return;
-          vDiff.subVectors(p1.pos, p2.pos);
-          const dist = vDiff.length();
-          if (dist < repulsionDist && dist > 0.01) {
-            vDiff
-              .normalize()
-              .multiplyScalar((repulsionDist - dist) * kRepulse);
-            vForce.add(vDiff);
+    const repDist = particleRadius * 1.5;
+    for (let iter = 0; iter < quality.settleIterations; iter++) {
+      for (let a = 0; a < n; a++) {
+        const p1 = particles[a];
+        _v1.set(0, 0, 0);
+        _v3.copy(p1.pos).multiplyScalar(-0.1);
+        _v1.add(_v3);
+        for (let b = 0; b < n; b++) {
+          if (a === b) continue;
+          _v2.subVectors(p1.pos, particles[b].pos);
+          const d = _v2.length();
+          if (d < repDist && d > 0.01) {
+            _v2.normalize().multiplyScalar((repDist - d) * 0.2);
+            _v1.add(_v2);
           }
-        });
-        p1.pos.add(vForce);
-      });
+        }
+        p1.pos.add(_v1);
+      }
     }
   }
+
+  // --- Red point light for nucleus glow ---
   if (atomicNumber > 1) {
-    const centerLight = new THREE.PointLight(0xff0000, 2.0, 15);
-    nucleusGroup.add(centerLight);
+    nucleusGroup.add(new THREE.PointLight(0xff0000, 2.0, 15));
   }
-  particles.forEach((p) => {
+
+  // --- NUCLEUS INTERIOR CULLING ---
+  // For atoms with many nucleons, interior particles are completely hidden
+  // by outer ones. We skip creating meshes for them → huge draw call savings.
+  // Example: Oganesson has ~294 nucleons, but only ~120 are on the surface.
+  const CULL_THRESHOLD = 20; // Only cull for nuclei with > 20 particles
+  let surfaceParticles = particles;
+
+  if (n > CULL_THRESHOLD) {
+    // Find max distance from center
+    let maxDist = 0;
+    for (let i = 0; i < n; i++) {
+      const d = particles[i].pos.length();
+      if (d > maxDist) maxDist = d;
+    }
+    // Keep particles within 1.5 particle diameters of the surface
+    const cutoff = maxDist - particleRadius * 3;
+    if (cutoff > 0) {
+      surfaceParticles = [];
+      for (let i = 0; i < n; i++) {
+        if (particles[i].pos.length() >= cutoff) {
+          surfaceParticles.push(particles[i]);
+        }
+      }
+    }
+  }
+
+  // --- Create meshes only for visible (surface) particles ---
+  for (let i = 0; i < surfaceParticles.length; i++) {
+    const p = surfaceParticles[i];
     const mesh = new THREE.Mesh(
       p.type === "proton" ? protonGeo : neutronGeo,
-      p.type === "proton" ? protonMat : neutronMat,
+      p.type === "proton" ? mats.protonMat : mats.neutronMat,
     );
     mesh.position.copy(p.pos);
     p.mesh = mesh;
     nucleusGroup.add(mesh);
-  });
+  }
+
+  // --- Electron shells ---
   const shells = [2, 8, 8, 18, 18, 32, 32];
   let electronsLeft = atomicNumber;
   for (let s = 0; s < shells.length; s++) {
@@ -280,7 +420,9 @@ export function updateAtomStructure(element) {
     const count = Math.min(electronsLeft, capacity);
     electronsLeft -= count;
     const radius = 4.5 + s * 2.5;
-    const orbitGeo = new THREE.TorusGeometry(radius, 0.04, 64, 100);
+
+    // Orbit ring
+    const orbitGeo = getTorusGeometry(radius, 0.04, 20, quality.orbitTubularSegments);
     const orbitMat = new THREE.MeshBasicMaterial({
       color: 0x8d7f71,
       transparent: true,
@@ -288,20 +430,27 @@ export function updateAtomStructure(element) {
     });
     const orbit = new THREE.Mesh(orbitGeo, orbitMat);
     orbit.rotation.x = Math.PI / 2;
+    orbit.userData = { originalOpacity: 0.3, highlightOpacity: 0.8, originalColor: 0x8d7f71 };
     wobbleGroup.add(orbit);
-    const elGeo = new THREE.SphereGeometry(0.3, 32, 32);
-    const elMat = new THREE.MeshStandardMaterial({
-      color: 0x0000ff,
-      roughness: 0.4,
-      metalness: 0.6,
-    });
-    const trailGeos = [];
+
+    // Invisible hit target for raycaster hover
+    const hitGeo = getTorusGeometry(radius, 0.4, 8, quality.hitTubularSegments);
+    const hitMesh = new THREE.Mesh(hitGeo, mats.hitMat);
+    hitMesh.rotation.x = Math.PI / 2;
+    hitMesh.userData = { orbitMesh: orbit };
+    wobbleGroup.add(hitMesh);
+    orbitHitTargets.push(hitMesh);
+
+    // Electron geometry + trail geometries (TRAIL_LENGTH=10, matching original)
+    const elGeo = getSphereGeometry(0.3, quality.electronSegments);
     const TRAIL_LENGTH = 10;
+    const trailGeos = [];
     for (let t = 0; t < TRAIL_LENGTH; t++) {
       trailGeos.push(new THREE.SphereGeometry(0.2 - t * 0.015, 8, 8));
     }
+
     for (let e = 0; e < count; e++) {
-      const elMesh = new THREE.Mesh(elGeo, elMat);
+      const elMesh = new THREE.Mesh(elGeo, mats.electronMat);
       const angleOffset = (e / count) * Math.PI * 2;
       elMesh.userData = {
         radius: radius,
@@ -311,14 +460,15 @@ export function updateAtomStructure(element) {
       };
       elMesh.position.x = radius * Math.cos(angleOffset);
       elMesh.position.z = radius * Math.sin(angleOffset);
+
+      // Trail spheres (original blue, original opacity curve)
       for (let t = 0; t < TRAIL_LENGTH; t++) {
-        const tGeo = trailGeos[t];
         const tMat = new THREE.MeshBasicMaterial({
           color: 0x0000ff,
           transparent: true,
           opacity: 0.3 - t * 0.03,
         });
-        const tMesh = new THREE.Mesh(tGeo, tMat);
+        const tMesh = new THREE.Mesh(trailGeos[t], tMat);
         tMesh.position.copy(elMesh.position);
         wobbleGroup.add(tMesh);
         elMesh.userData.trails.push(tMesh);
@@ -327,6 +477,8 @@ export function updateAtomStructure(element) {
       electrons.push(elMesh);
     }
   }
+
+  // --- Camera fit ---
   let actualMaxRadius = 4.5;
   let shellsUsed = 0;
   let tempElectrons = atomicNumber;
@@ -348,8 +500,7 @@ export function onWindowResize() {
   if (!camera || !renderer) return;
   if (_container.clientHeight === 0) {
     const visualPane = document.querySelector(".modal-visual-pane");
-    if (visualPane)
-      _container.style.height = visualPane.clientHeight + "px";
+    if (visualPane) _container.style.height = visualPane.clientHeight + "px";
   }
   camera.aspect = _container.clientWidth / _container.clientHeight;
   camera.updateProjectionMatrix();
@@ -364,12 +515,8 @@ export function reset3DView() {
   atomGroup.rotation.set(0, 0, 0);
   const vFOV = 45 * (Math.PI / 180);
   const r = atomGroup.userData.maxRadius || 4.5;
-  const safeR = r * 1.2;
-  let dist = safeR / Math.tan(vFOV / 2);
-  const aspect = camera.aspect;
-  if (aspect < 1) {
-    dist = dist / aspect;
-  }
+  let dist = (r * 1.2) / Math.tan(vFOV / 2);
+  if (camera.aspect < 1) dist = dist / camera.aspect;
   targetCameraZ = dist;
   initialCameraZ = 16;
   camera.position.z = initialCameraZ;
@@ -380,106 +527,127 @@ export function animateAtom() {
   if (!renderer) return;
   animationId = requestAnimationFrame(animateAtom);
 
-  // Global animation speed/pause support
   const isPaused = window._zperiodAnimPaused || false;
-  const speedMul = (typeof window._zperiodAnimSpeed === 'number') ? window._zperiodAnimSpeed : 0.6;
-
+  const speedMul = (typeof window._zperiodAnimSpeed === "number") ? window._zperiodAnimSpeed : 0.6;
   const time = Date.now() * 0.001;
-  if (atomGroup) {
-    const nucleusGroup = atomGroup.getObjectByName("nucleusGroup");
-    if (
-      nucleusGroup &&
-      nucleusGroup.userData.physicsIterationsRemaining > 0
-    ) {
-      const particles = nucleusGroup.userData.particles;
-      const remaining = nucleusGroup.userData.physicsIterationsRemaining;
-      const batchSize = 5;
-      const runCount = Math.min(remaining, batchSize);
-      const particleRadius = 0.6;
-      const repulsionDist = particleRadius * 1.5;
-      const kRepulse = 0.2;
-      const kCenter = 0.1;
-      const vForce = new THREE.Vector3();
-      const vDiff = new THREE.Vector3();
-      const vTemp = new THREE.Vector3();
-      for (let k = 0; k < runCount; k++) {
-        particles.forEach((p1, idx1) => {
-          vForce.set(0, 0, 0);
-          vTemp.copy(p1.pos).multiplyScalar(-kCenter);
-          vForce.add(vTemp);
-          particles.forEach((p2, idx2) => {
-            if (idx1 === idx2) return;
-            vDiff.subVectors(p1.pos, p2.pos);
-            const dist = vDiff.length();
-            if (dist < repulsionDist && dist > 0.01) {
-              vDiff
-                .normalize()
-                .multiplyScalar((repulsionDist - dist) * kRepulse);
-              vForce.add(vDiff);
-            }
-          });
-          p1.pos.add(vForce);
-        });
+
+  if (!atomGroup) return;
+
+  // --- Orbit hover (raycaster) ---
+  if (orbitHitTargets.length > 0) {
+    raycaster.setFromCamera(mouse, camera);
+    try {
+      const intersects = raycaster.intersectObjects(orbitHitTargets, false);
+      let foundOrbit = null;
+      for (let i = 0; i < intersects.length; i++) {
+        const ud = intersects[i].object.userData;
+        if (ud && ud.orbitMesh) { foundOrbit = ud.orbitMesh; break; }
       }
-      particles.forEach((p) => {
-        if (p.mesh) p.mesh.position.copy(p.pos);
-      });
-      nucleusGroup.userData.physicsIterationsRemaining -= runCount;
-    }
+      if (hoveredOrbit && hoveredOrbit !== foundOrbit) {
+        hoveredOrbit.material.opacity = hoveredOrbit.userData.originalOpacity || 0.3;
+        if (hoveredOrbit.userData.originalColor !== undefined) {
+          hoveredOrbit.material.color.setHex(hoveredOrbit.userData.originalColor);
+        }
+      }
+      if (foundOrbit) {
+        foundOrbit.material.opacity = foundOrbit.userData.highlightOpacity || 0.8;
+        foundOrbit.material.color.setHex(0xffaa00);
+        hoveredOrbit = foundOrbit;
+      } else {
+        hoveredOrbit = null;
+      }
+    } catch (e) { /* teardown race */ }
   }
+
+  // --- Nucleus lazy physics (disabled by default, physicsIterationsRemaining=0) ---
+  const ng = _nucleusGroupRef;
+  if (ng && ng.userData.physicsIterationsRemaining > 0) {
+    const particles = ng.userData.particles;
+    const runCount = Math.min(ng.userData.physicsIterationsRemaining, 5);
+    const repDist = 0.9; // 0.6 * 1.5
+    for (let k = 0; k < runCount; k++) {
+      for (let a = 0; a < particles.length; a++) {
+        const p1 = particles[a];
+        _v1.set(0, 0, 0);
+        _v3.copy(p1.pos).multiplyScalar(-0.1);
+        _v1.add(_v3);
+        for (let b = 0; b < particles.length; b++) {
+          if (a === b) continue;
+          _v2.subVectors(p1.pos, particles[b].pos);
+          const d = _v2.length();
+          if (d < repDist && d > 0.01) {
+            _v2.normalize().multiplyScalar((repDist - d) * 0.2);
+            _v1.add(_v2);
+          }
+        }
+        p1.pos.add(_v1);
+      }
+    }
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      if (p.mesh) p.mesh.position.copy(p.pos);
+    }
+    ng.userData.physicsIterationsRemaining -= runCount;
+  }
+
+  // --- Intro camera animation ---
   if (isIntroAnimating) {
     const elapsed = (Date.now() - introStartTime) * 0.001;
-    const duration = 2.0;
-    const t = Math.min(elapsed / duration, 1);
+    const t = Math.min(elapsed / 2.0, 1);
     const ease = 1 - Math.pow(1 - t, 5);
     camera.position.z = 20 - (20 - targetCameraZ) * ease;
     atomGroup.rotation.x = ease * 0.5;
     atomGroup.rotation.y += 0.002 * ease;
     if (t >= 1) isIntroAnimating = false;
-  } else if (!isTopViewMode) {
-    // Only rotate if not in top view mode & not paused
-    if (!isPaused) atomGroup.rotation.y += 0.002 * speedMul;
+  } else if (!isTopViewMode && !isPaused) {
+    atomGroup.rotation.y += 0.002 * speedMul;
   }
-  if (atomGroup && atomGroup.userData.popStartTime) {
-    const popElapsed = (Date.now() - atomGroup.userData.popStartTime) * 0.001;
-    const popDur = 0.5;
-    if (popElapsed < popDur) {
-      const t = popElapsed / popDur;
-      const ease = 1 - Math.pow(1 - t, 3);
-      const s = 0.1 + (1 - 0.1) * ease;
+
+  // --- Pop-in scale ---
+  if (atomGroup.userData.popStartTime) {
+    const pe = (Date.now() - atomGroup.userData.popStartTime) * 0.001;
+    if (pe < 0.5) {
+      const ease = 1 - Math.pow(1 - pe / 0.5, 3);
+      const s = 0.1 + 0.9 * ease;
       atomGroup.scale.set(s, s, s);
     } else {
       atomGroup.scale.set(1, 1, 1);
       atomGroup.userData.popStartTime = null;
     }
   }
-  const wobbleGroup = atomGroup.getObjectByName("wobbleGroup");
-  if (wobbleGroup && !isTopViewMode && !isPaused) {
-    wobbleGroup.rotation.y += 0.002 * speedMul;
-    wobbleGroup.rotation.z = Math.sin(time * 0.5 * speedMul) * 0.2;
-    wobbleGroup.rotation.x = Math.cos(time * 0.3 * speedMul) * 0.1;
+
+  // --- Wobble & nucleus rotation ---
+  const wg = _wobbleGroupRef;
+  if (wg && !isTopViewMode && !isPaused) {
+    wg.rotation.y += 0.002 * speedMul;
+    wg.rotation.z = Math.sin(time * 0.5 * speedMul) * 0.2;
+    wg.rotation.x = Math.cos(time * 0.3 * speedMul) * 0.1;
   }
-  const nucleusGroupAnim = atomGroup.getObjectByName("nucleusGroup");
-  if (nucleusGroupAnim && !isTopViewMode && !isPaused) {
-    nucleusGroupAnim.rotation.y -= 0.005 * speedMul;
-    nucleusGroupAnim.rotation.x = Math.sin(time * 0.2 * speedMul) * 0.1;
+  if (ng && !isTopViewMode && !isPaused) {
+    ng.rotation.y -= 0.005 * speedMul;
+    ng.rotation.x = Math.sin(time * 0.2 * speedMul) * 0.1;
   }
-  electrons.forEach((el) => {
-    // Only animate electrons if not in top view mode & not paused
+
+  // --- Electrons + trails (for-loop, no forEach) ---
+  const eLen = electrons.length;
+  for (let i = 0; i < eLen; i++) {
+    const el = electrons[i];
+    const ud = el.userData;
     if (!isTopViewMode && !isPaused) {
-      el.userData.angle += el.userData.speed * speedMul;
+      ud.angle += ud.speed * speedMul;
     }
-    const r = el.userData.radius;
-    el.position.x = r * Math.cos(el.userData.angle);
-    el.position.z = r * Math.sin(el.userData.angle);
-    const trails = el.userData.trails;
-    if (trails && trails.length > 0) {
-      for (let i = trails.length - 1; i > 0; i--) {
-        trails[i].position.copy(trails[i - 1].position);
+    const r = ud.radius;
+    el.position.x = r * Math.cos(ud.angle);
+    el.position.z = r * Math.sin(ud.angle);
+    const trails = ud.trails;
+    if (trails.length > 0) {
+      for (let t = trails.length - 1; t > 0; t--) {
+        trails[t].position.copy(trails[t - 1].position);
       }
       trails[0].position.copy(el.position);
     }
-  });
+  }
+
   renderer.render(scene, camera);
 }
 
@@ -487,6 +655,10 @@ export function animateAtom() {
 export function cleanup3D(full) {
   if (animationId) cancelAnimationFrame(animationId);
   animationId = null;
+  if (full && eventAbortController) {
+    eventAbortController.abort();
+    eventAbortController = null;
+  }
   if (full && renderer) {
     renderer.forceContextLoss();
     renderer.dispose();
@@ -498,19 +670,24 @@ export function cleanup3D(full) {
     camera = null;
     atomGroup = null;
     electrons = [];
+    orbitHitTargets = [];
+    _nucleusGroupRef = null;
+    _wobbleGroupRef = null;
   }
 }
 
-// ===== Helper: Clear current atom (used by showModal before re-render) =====
+// ===== Helper: Clear current atom =====
 export function clearCurrentAtom() {
   if (atomGroup) {
     while (atomGroup.children.length > 0) {
       atomGroup.remove(atomGroup.children[0]);
     }
   }
+  _nucleusGroupRef = null;
+  _wobbleGroupRef = null;
 }
 
-// ===== Helper: Render scene once (used by showModal for blank frame) =====
+// ===== Helper: Render scene once =====
 export function renderScene() {
   if (renderer && scene && camera) {
     renderer.render(scene, camera);

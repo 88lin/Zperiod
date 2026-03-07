@@ -73,14 +73,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css?v=17">
-    <link rel="stylesheet" href="css/grid.css?v=17">
-    <link rel="stylesheet" href="css/modal.css?v=17">
-    <link rel="stylesheet" href="css/tools.css?v=17">
-    <link rel="stylesheet" href="css/ions.css?v=17">
-    <link rel="stylesheet" href="css/worksheet-styles.css?v=17">
-    <link rel="stylesheet" href="css/ion-animations.css?v=17">
-    <link rel="stylesheet" href="css/mobile-landing.css?v=17">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/grid.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/tools.css">
+    <link rel="stylesheet" href="css/ions.css">
+    <link rel="stylesheet" href="css/worksheet-styles.css">
+    <link rel="stylesheet" href="css/ion-animations.css">
+    <link rel="stylesheet" href="css/mobile-landing.css">
     <script type="text/javascript">
         (function (c, l, a, r, i, t, y) {
             c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
@@ -151,7 +151,12 @@
                     <p class="ml-feature-desc">All 118 elements with category color-coding, phase data at STP, and
                         instant access to comprehensive chemical information.</p>
                     <div class="ml-img-frame">
-                        <img src="images/preview-table.png" alt="Interactive periodic table with color-coded element categories and phase data" loading="lazy">
+                        <picture>
+                            <source srcset="images/preview-table.avif" type="image/avif">
+                            <img src="images/preview-table.png"
+                                alt="Interactive periodic table with color-coded element categories and phase data"
+                                loading="lazy" decoding="async" width="2940" height="1846">
+                        </picture>
                     </div>
                 </div>
 
@@ -162,7 +167,12 @@
                     <p class="ml-feature-desc">Interactive 3D atom structures with electron shells, swipeable info
                         cards, and detailed properties for every element.</p>
                     <div class="ml-img-frame">
-                        <img src="images/preview-modal.png" alt="3D atom model showing electron shells and element properties" loading="lazy">
+                        <picture>
+                            <source srcset="images/preview-modal.avif" type="image/avif">
+                            <img src="images/preview-modal.png"
+                                alt="3D atom model showing electron shells and element properties" loading="lazy"
+                                decoding="async" width="2940" height="1846">
+                        </picture>
                     </div>
                 </div>
 
@@ -173,7 +183,12 @@
                     <p class="ml-feature-desc">Balance chemical equations with a real-time physics-based scale
                         visualization and one-click auto-balance.</p>
                     <div class="ml-img-frame">
-                        <img src="images/preview-tools.png" alt="Chemical equation balancer with real-time scale visualization" loading="lazy">
+                        <picture>
+                            <source srcset="images/preview-tools.avif" type="image/avif">
+                            <img src="images/preview-tools.png"
+                                alt="Chemical equation balancer with real-time scale visualization" loading="lazy"
+                                decoding="async" width="2940" height="1846">
+                        </picture>
                     </div>
                 </div>
 
@@ -184,7 +199,12 @@
                     <p class="ml-feature-desc">Generate print-ready balanced equation worksheets with adjustable
                         difficulty, multiple reaction types, and PDF export.</p>
                     <div class="ml-img-frame">
-                        <img src="images/preview-worksheet.png" alt="Chemistry worksheet generator with balanced equation exercises" loading="lazy">
+                        <picture>
+                            <source srcset="images/preview-worksheet.avif" type="image/avif">
+                            <img src="images/preview-worksheet.png"
+                                alt="Chemistry worksheet generator with balanced equation exercises" loading="lazy"
+                                decoding="async" width="2940" height="1846">
+                        </picture>
                     </div>
                 </div>
             </section>
@@ -237,7 +257,7 @@
     <div id="welcome-modal" class="modal-overlay">
         <div class="modal-content welcome-redesign">
             <div class="modal-top-buttons">
-                <button class="modal-close" id="welcome-close-btn">&times;</button>
+                <button class="modal-close" id="welcome-close-btn" aria-label="Close welcome dialog">&times;</button>
             </div>
             <div class="about-container">
                 <!-- Left: Product Preview - Apple Style Minimal -->
@@ -262,7 +282,18 @@
                             Get Started
                         </button>
 
-                        <p class="welcome-footer">v1.2 · Built with precision</p>
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+                            <p class="welcome-footer" style="margin: 0;">v1.3 · Built with precision</p>
+                            <button id="show-changelog-btn" title="View Update History"
+                                style="width: 28px; height: 28px; border-radius: 50%; border: none; background: rgba(99,102,241,0.1); color: #6366f1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -315,21 +346,122 @@
                                         </div>
                                         <span class="email-text">440016162@gapps.yrdsb.ca</span>
                                         <div class="copy-feedback">
-                                            <svg class="icon-copy" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                            <svg class="icon-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <svg class="icon-copy" width="12" height="12" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                </path>
+                                            </svg>
+                                            <svg class="icon-check" width="12" height="12" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                style="display:none;">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
                                         </div>
                                     </button>
                                     <button class="email-row" onclick="copyEmail('zhilips123123@gmail.com', this)">
                                         <div class="email-icon">
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <circle cx="12" cy="12" r="4"></circle>
+                                                <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
+                                            </svg>
                                         </div>
                                         <span class="email-text">zhilips123123@gmail.com</span>
                                         <div class="copy-feedback">
-                                            <svg class="icon-copy" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                            <svg class="icon-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            <svg class="icon-copy" width="12" height="12" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                </path>
+                                            </svg>
+                                            <svg class="icon-check" width="12" height="12" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2"
+                                                style="display:none;">
+                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                            </svg>
                                         </div>
                                     </button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Changelog Modal (shown once per version for ALL users) ===== -->
+    <div id="changelog-modal" class="modal-overlay">
+        <div class="modal-content welcome-redesign">
+            <div class="modal-top-buttons">
+                <button class="modal-close" id="changelog-close-btn" aria-label="Close changelog">&times;</button>
+            </div>
+            <div class="about-container">
+                <!-- Left: Header & CTA (reuses welcome layout) -->
+                <div class="about-left" style="flex: 1;">
+                    <div class="about-content-wrapper" style="max-width: 320px;">
+                        <span class="welcome-eyebrow">What's New</span>
+                        <h1 class="welcome-title">v1.3</h1>
+                        <h2 class="welcome-subtitle">Major Update.<br><span>Performance &amp; Features.</span></h2>
+
+                        <p class="welcome-description">
+                            New visualization tools, unit conversion,
+                            data accuracy fixes, and a faster 3D engine.
+                        </p>
+
+                        <div class="welcome-features">
+                            <span class="feature-pill">EIT Mode</span>
+                            <span class="feature-pill">Unit Toggle</span>
+                            <span class="feature-pill">Optimized</span>
+                        </div>
+
+                        <button id="changelog-dismiss-btn" class="welcome-cta">
+                            Got it — Let's go!
+                        </button>
+
+                        <p class="welcome-footer">March 7, 2026</p>
+                    </div>
+                </div>
+
+                <!-- Right: Changelog Cards -->
+                <div class="about-right"
+                    style="flex: 1.5; background: #fff; padding: 40px 55px; border-radius: 0 32px 32px 0; display: flex; align-items: center;">
+                    <div class="changelog-list" style="display: flex; flex-direction: column; gap: 14px; width: 100%;">
+                        <div class="changelog-card">
+                            <span class="changelog-badge badge-new">NEW</span>
+                            <div class="changelog-card-content">
+                                <strong>Element Information Toggle</strong>
+                                <p>Visualize any numeric property across the table with Color gradient or Filter mode.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="changelog-card">
+                            <span class="changelog-badge badge-new">NEW</span>
+                            <div class="changelog-card-content">
+                                <strong>Unit Conversion on Click</strong>
+                                <p>Tap any property value to toggle units — °C ↔ °F ↔ K, and more.</p>
+                            </div>
+                        </div>
+                        <div class="changelog-card">
+                            <span class="changelog-badge badge-data">DATA</span>
+                            <div class="changelog-card-content">
+                                <strong>Element Data Audit</strong>
+                                <p>Comprehensive review &amp; corrections across all 118 elements.</p>
+                            </div>
+                        </div>
+                        <div class="changelog-card">
+                            <span class="changelog-badge badge-perf">PERF</span>
+                            <div class="changelog-card-content">
+                                <strong>Performance Overhaul</strong>
+                                <p>Nucleus culling, geometry caching, zero-GC animation. EIT: fast-path DOM updates.</p>
+                            </div>
+                        </div>
+                        <div class="changelog-card">
+                            <span class="changelog-badge badge-ui">UI</span>
+                            <div class="changelog-card-content">
+                                <strong>3D Orbit Hover &amp; Cleanup</strong>
+                                <p>Orbit rings highlight on hover. Removed 1.16 MB of redundant files.</p>
                             </div>
                         </div>
                     </div>
@@ -356,7 +488,8 @@
             <div class="version-dropdown" id="version-dropdown">
                 <button class="version-dropdown-toggle" id="version-dropdown-toggle">
                     <span class="version-current-label">Standard</span>
-                    <svg class="version-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <svg class="version-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
                 </button>
@@ -631,33 +764,57 @@
                 <nav class="sv-quick-links">
                     <a href="https://github.com/Zhilips/Zperiod" target="_blank" class="sv-link-card">
                         <div class="sv-link-card-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                            </svg>
                         </div>
                         <div class="sv-link-card-text">
                             <span class="sv-link-card-title">GitHub</span>
                             <span class="sv-link-card-desc">Source code & contributions</span>
                         </div>
-                        <svg class="sv-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        <svg class="sv-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
                     </a>
                     <a href="https://buymeacoffee.com/zperiod" target="_blank" class="sv-link-card sv-link-card-coffee">
                         <div class="sv-link-card-icon sv-icon-warm">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                                <line x1="6" y1="1" x2="6" y2="4"></line>
+                                <line x1="10" y1="1" x2="10" y2="4"></line>
+                                <line x1="14" y1="1" x2="14" y2="4"></line>
+                            </svg>
                         </div>
                         <div class="sv-link-card-text">
                             <span class="sv-link-card-title">Buy Me a Coffee</span>
                             <span class="sv-link-card-desc">Support development</span>
                         </div>
-                        <svg class="sv-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        <svg class="sv-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
                     </a>
                     <button class="sv-link-card" id="settings-open-welcome">
                         <div class="sv-link-card-icon sv-icon-blue">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
                         </div>
                         <div class="sv-link-card-text">
                             <span class="sv-link-card-title">Help / About</span>
                             <span class="sv-link-card-desc">Introduction & how to use</span>
                         </div>
-                        <svg class="sv-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        <svg class="sv-link-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
                     </button>
                 </nav>
             </aside>
@@ -668,7 +825,11 @@
                 <section class="sv-card sv-card-anim">
                     <div class="sv-card-icon-row">
                         <div class="sv-icon-circle">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polygon points="10 8 16 12 10 16 10 8"></polygon>
+                            </svg>
                         </div>
                         <h3>Electron Animation</h3>
                     </div>
@@ -676,13 +837,21 @@
                         <div class="sv-anim-row">
                             <span class="sv-anim-label">Playback</span>
                             <button class="sv-play-btn" id="anim-play-toggle" title="Pause / Play">
-                                <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
-                                <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <svg class="icon-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <rect x="6" y="4" width="4" height="16"></rect>
+                                    <rect x="14" y="4" width="4" height="16"></rect>
+                                </svg>
+                                <svg class="icon-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
+                                    style="display:none;">
+                                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                </svg>
                             </button>
                         </div>
                         <div class="sv-anim-row">
-                            <span class="sv-anim-label">Speed&ensp;<span class="sv-speed-val" id="speed-value-label">0.6×</span></span>
-                            <input type="range" id="anim-speed-slider" class="sv-slider" min="0.2" max="2.0" step="0.05" value="0.6">
+                            <span class="sv-anim-label">Speed&ensp;<span class="sv-speed-val"
+                                    id="speed-value-label">0.6×</span></span>
+                            <input type="range" id="anim-speed-slider" class="sv-slider" min="0.2" max="2.0" step="0.05"
+                                value="0.6">
                         </div>
                     </div>
                 </section>
@@ -691,7 +860,11 @@
                 <section class="sv-card sv-card-suggest">
                     <div class="sv-card-icon-row">
                         <div class="sv-icon-circle sv-icon-purple">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
                         </div>
                         <h3>Send a Suggestion</h3>
                     </div>
@@ -704,9 +877,14 @@
                         <button class="sv-chip" data-text="">Other</button>
                     </div>
                     <div class="sv-suggest-row">
-                        <input type="text" id="settings-suggestion-input" class="sv-suggest-input" placeholder="Type your suggestion..." maxlength="500">
+                        <input type="text" id="settings-suggestion-input" class="sv-suggest-input"
+                            placeholder="Type your suggestion..." maxlength="500">
                         <button id="settings-suggestion-send" class="sv-suggest-send" title="Send">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
                         </button>
                     </div>
                     <div class="sv-suggest-status" id="suggest-status"></div>
@@ -728,7 +906,7 @@
     <div id="feature-modal" class="modal-overlay">
         <div class="modal-content" id="feature-modal-content">
             <div class="modal-top-buttons">
-                <button class="modal-close" id="feature-modal-close">&times;</button>
+                <button class="modal-close" id="feature-modal-close" aria-label="Close tool dialog">&times;</button>
             </div>
             <div class="feature-modal-body" id="feature-modal-body">
                 <!-- Tool content will be injected here -->
@@ -739,7 +917,7 @@
     <div id="element-modal" class="modal-overlay">
         <div class="modal-content" id="modal-content-primary">
             <div class="modal-top-buttons">
-                <button class="modal-close" id="modal-close">&times;</button>
+                <button class="modal-close" id="modal-close" aria-label="Close element dialog">&times;</button>
             </div>
             <div class="modal-info-pane">
                 <div class="level-header">
@@ -762,7 +940,7 @@
                                     <div class="card-info-container">
                                         <div class="info-row">
                                             <span class="info-label">Type</span>
-                                            <span class="info-value">Reactive nonmetal</span>
+                                            <span class="info-value">Other nonmetal</span>
                                         </div>
                                         <div class="info-row">
                                             <span class="info-label">Group / Period</span>
@@ -810,7 +988,7 @@
                                         </div>
                                         <div class="info-divider"></div>
                                         <div class="ions-section">
-                                            <div class="info-label mb-2">Natural Isotopes</div>
+                                            <div class="info-label mb-2">Key Isotopes</div>
                                             <div class="ion-item">
                                                 <span class="ion-symbol"><sup>1</sup>H</span>
                                                 <div
@@ -862,8 +1040,10 @@
                                                 <div class="ox-header">
                                                     <span class="l3-stat-label">Oxidation States</span>
                                                     <span class="ox-legend">
-                                                        <span class="ox-legend-item"><span class="ox-dot common"></span>Common</span>
-                                                        <span class="ox-legend-item"><span class="ox-dot possible"></span>Possible</span>
+                                                        <span class="ox-legend-item"><span
+                                                                class="ox-dot common"></span>Common</span>
+                                                        <span class="ox-legend-item"><span
+                                                                class="ox-dot possible"></span>Possible</span>
                                                     </span>
                                                 </div>
                                                 <div class="oxidation-container">
@@ -875,18 +1055,27 @@
                                         <div class="glass-panel" style="margin-bottom: 0; flex-grow: 1;">
                                             <div class="glass-panel-title">Physical Metrics</div>
                                             <div class="l3-stat-grid">
+                                                <div class="l3-stat-item l3-clickable" data-metric="ie"
+                                                    title="Click to change unit">
+                                                    <span class="l3-stat-label">1st Ionization</span>
+                                                    <div>
+                                                        <span class="l3-stat-value">1312</span>
+                                                        <span class="l3-stat-unit">kJ/mol</span>
+                                                    </div>
+                                                </div>
+                                                <div class="l3-stat-item l3-clickable" data-metric="ea"
+                                                    title="Click to change unit">
+                                                    <span class="l3-stat-label">Electron Affinity</span>
+                                                    <div>
+                                                        <span class="l3-stat-value">72.8</span>
+                                                        <span class="l3-stat-unit">kJ/mol</span>
+                                                    </div>
+                                                </div>
                                                 <div class="l3-stat-item">
                                                     <span class="l3-stat-label">Electronegativity</span>
                                                     <div>
                                                         <span class="l3-stat-value">2.20</span>
                                                         <span class="l3-stat-unit">Pauling</span>
-                                                    </div>
-                                                </div>
-                                                <div class="l3-stat-item">
-                                                    <span class="l3-stat-label">1st Ionization</span>
-                                                    <div>
-                                                        <span class="l3-stat-value">1312</span>
-                                                        <span class="l3-stat-unit">kJ/mol</span>
                                                     </div>
                                                 </div>
                                                 <div class="l3-stat-item">
@@ -896,14 +1085,16 @@
                                                         <span class="l3-stat-unit">g/L</span>
                                                     </div>
                                                 </div>
-                                                <div class="l3-stat-item">
+                                                <div class="l3-stat-item l3-clickable" data-metric="melt"
+                                                    title="Click to change unit">
                                                     <span class="l3-stat-label">Melting Point</span>
                                                     <div>
                                                         <span class="l3-stat-value">-259.1</span>
                                                         <span class="l3-stat-unit">°C</span>
                                                     </div>
                                                 </div>
-                                                <div class="l3-stat-item">
+                                                <div class="l3-stat-item l3-clickable" data-metric="boil"
+                                                    title="Click to change unit">
                                                     <span class="l3-stat-label">Boiling Point</span>
                                                     <div>
                                                         <span class="l3-stat-value">-252.8</span>
@@ -1112,6 +1303,26 @@
                                 <span class="prop-value" id="modal-ionization">13.6 eV</span>
                             </div>
                         </div>
+                        <div class="prop-card">
+                            <div class="prop-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M12 1v4"></path>
+                                    <path d="M12 19v4"></path>
+                                    <path d="M1 12h4"></path>
+                                    <path d="M19 12h4"></path>
+                                    <path d="M4.22 4.22l2.83 2.83"></path>
+                                    <path d="M16.95 16.95l2.83 2.83"></path>
+                                    <path d="M4.22 19.78l2.83-2.83"></path>
+                                    <path d="M16.95 7.05l2.83-2.83"></path>
+                                </svg>
+                            </div>
+                            <div class="prop-text">
+                                <span class="prop-label">Electron Affinity</span>
+                                <span class="prop-value" id="modal-electron-affinity">72.8 kJ/mol</span>
+                            </div>
+                        </div>
                         <div class="prop-card full-width-card">
                             <div class="prop-icon">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -1169,7 +1380,7 @@
     <div id="ion-modal" class="modal-overlay">
         <div class="modal-content ion-modal-content">
             <div class="modal-top-buttons">
-                <button class="modal-close" id="ion-modal-close">&times;</button>
+                <button class="modal-close" id="ion-modal-close" aria-label="Close ion dialog">&times;</button>
             </div>
             <div class="modal-info-pane">
                 <div class="level-header">
@@ -1234,7 +1445,7 @@
                                         </div>
                                         <div class="info-divider"></div>
                                         <div class="ions-section">
-                                            <div class="info-label mb-2">Natural Isotopes</div>
+                                            <div class="info-label mb-2">Key Isotopes</div>
                                             <div id="ion-l2-isotopes">
                                                 <div class="ion-item"
                                                     style="justify-content: center; opacity: 0.5; font-style: italic;">
@@ -1312,8 +1523,10 @@
                                                 <div class="ox-header">
                                                     <span class="l3-stat-label">Oxidation States</span>
                                                     <span class="ox-legend">
-                                                        <span class="ox-legend-item"><span class="ox-dot common"></span>Common</span>
-                                                        <span class="ox-legend-item"><span class="ox-dot possible"></span>Possible</span>
+                                                        <span class="ox-legend-item"><span
+                                                                class="ox-dot common"></span>Common</span>
+                                                        <span class="ox-legend-item"><span
+                                                                class="ox-dot possible"></span>Possible</span>
                                                     </span>
                                                 </div>
                                                 <div class="oxidation-container" id="ion-l3-oxidation">
@@ -1401,14 +1614,12 @@
             </div>
         </div>
     </div>
-    <script src="three.min.js"></script>
-    <script src="js/ion-animations.js?v=17"></script>
-    <script type="module" src="script.js?v=17"></script>
-    <script src="js/worksheet-generator.js?v=17"></script>
+    <script type="module" src="script.js"></script>
 
     <!-- Global Floating About Button -->
     <button class="floating-about-btn" id="floating-about-btn" title="About">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="16" x2="12" y2="12"></line>
             <line x1="12" y1="8" x2="12.01" y2="8"></line>

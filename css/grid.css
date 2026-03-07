@@ -16,9 +16,476 @@
   margin: 0;
   width: 1240px;
   /* Fixed logical width for scaling */
+  position: relative;
+  overflow: visible;
+}
+
+/* ==============================================
+   EIT Controller – Inline bar in row 1 (H ↔ He gap)
+   Design-matched to Zperiod's pill-nav language.
+   ============================================== */
+
+.eit-controller {
+  grid-column: 2 / 18;
+  grid-row: 1;
+  align-self: center;
+  justify-self: stretch;
+  z-index: 200;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px;
+  position: relative;
+  min-height: 0;
+}
+
+/* ---- Property trigger (matches .version-dropdown-toggle) ---- */
+.eit-property-trigger {
+  height: 34px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(0, 0, 0, 0.04);
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0 14px 0 13px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: inherit;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.eit-property-trigger:hover {
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.eit-property-trigger:active {
+  transform: scale(0.96);
+  background: rgba(0, 0, 0, 0.09);
+}
+
+.eit-trigger-icon {
+  display: none;
+}
+
+.eit-trigger-prefix {
+  display: none;
+}
+
+.eit-current-property {
+  color: inherit;
+  font-weight: 600;
+  font-size: inherit;
+}
+
+.eit-trigger-caret {
+  opacity: 0.45;
+  font-size: 10px;
+  line-height: 1;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ---- Inline slider section ---- */
+.eit-slider-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.eit-slider-section[hidden] {
+  display: none !important;
+}
+
+.eit-slider-values {
+  display: contents;
+}
+
+.eit-slider-values span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #1d1d1f;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-variant-numeric: tabular-nums;
+  min-width: 36px;
+  text-align: center;
+}
+
+.eit-dual-slider {
+  position: relative;
+  height: 26px;
+  flex: 1;
+  min-width: 60px;
+}
+
+.eit-slider-track,
+.eit-slider-fill {
+  position: absolute;
+  top: 9px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  border-radius: 999px;
+}
+
+.eit-slider-track {
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.eit-slider-fill {
+  left: 0;
+  right: auto;
+  width: 100%;
+  background: linear-gradient(90deg,
+      hsl(210, 70%, 72%) 0%,
+      hsl(170, 55%, 62%) 30%,
+      hsl(50, 70%, 65%) 60%,
+      hsl(15, 65%, 58%) 100%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.eit-range-input {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 26px;
+  margin: 0;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+.eit-range-input::-webkit-slider-runnable-track {
+  height: 8px;
+  background: transparent;
+}
+
+.eit-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+  background: #1d1d1f;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 0px rgba(29, 29, 31, 0);
+  pointer-events: auto;
+  cursor: ew-resize;
+  margin-top: -5px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.eit-range-input::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.35),
+    0 0 0 4px rgba(29, 29, 31, 0.08);
+}
+
+.eit-range-input::-webkit-slider-thumb:active {
+  transform: scale(1.15);
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.35),
+    0 0 0 6px rgba(29, 29, 31, 0.12);
+}
+
+.eit-range-input::-moz-range-track {
+  height: 8px;
+  background: transparent;
+}
+
+.eit-range-input::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+  background: #1d1d1f;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.3),
+    0 0 0 0px rgba(29, 29, 31, 0);
+  pointer-events: auto;
+  cursor: ew-resize;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.eit-range-input::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.35),
+    0 0 0 4px rgba(29, 29, 31, 0.08);
+}
+
+/* ---- Mode toggle (matches .global-nav-pill) ---- */
+.eit-mode-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 3px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.04);
+  border: none;
+  height: 32px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Sliding pill indicator for mode toggle */
+.eit-mode-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: calc(100% - 6px);
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.eit-mode-btn {
+  border: none;
+  background: transparent;
+  color: #444;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0 14px;
+  height: 100%;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  font-family: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+.eit-mode-btn:hover:not(.active) {
+  color: #1d1d1f;
+}
+
+.eit-mode-btn.active {
+  color: #1d1d1f;
+  background: transparent;
+}
+
+/* ---- Reset button (matches .version-dropdown-toggle) ---- */
+.eit-reset-btn {
+  height: 32px;
+  border-radius: 18px;
+  border: none;
+  background: rgba(0, 0, 0, 0.04);
+  color: #999;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-family: inherit;
+  letter-spacing: -0.01em;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.eit-reset-btn:hover {
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.eit-reset-btn:active {
+  transform: scale(0.96);
+}
+
+/* ---- Dropdown panel (matches .version-dropdown-menu) ---- */
+.eit-bar {
+  display: none;
+}
+
+.eit-property-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    inset 0 0.5px 0 rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 500;
+  white-space: nowrap;
+  transform: translateY(-6px) scale(0.96);
+  transition:
+    opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.eit-property-panel[hidden] {
+  display: flex !important;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-6px) scale(0.96);
+}
+
+.eit-property-panel.eit-panel-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Hide header in compact mode */
+.eit-panel-header {
+  display: none;
+}
+
+.eit-panel-title {
+  display: none;
+}
+
+.eit-panel-close {
+  display: none;
+}
+
+.eit-panel-body {
+  display: flex;
+  gap: 0;
+  padding: 0;
+}
+
+/* ---- Property chips (single row, matches .nav-pill-btn) ---- */
+.eit-property-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+}
+
+.eit-chip {
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 18px;
+  border: none;
+  background: transparent;
+  color: #444;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: color 0.25s ease, background 0.2s ease;
+}
+
+.eit-chip:hover {
+  color: #1d1d1f;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.eit-chip.active {
+  background: #fff;
+  color: #1d1d1f;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.eit-chip .eit-chip-unit {
+  font-size: 0.7rem;
+  font-weight: 500;
+  opacity: 0.45;
+}
+
+.eit-chip.active .eit-chip-unit {
+  opacity: 0.55;
+}
+
+/* Indicate chips that support unit cycling */
+.eit-chip.active[data-has-units] .eit-chip-unit {
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* ---- Hidden inline legend ---- */
+.eit-legend {
+  display: none !important;
+}
+
+.eit-legend-inline {
+  display: none !important;
+}
+
+/* ---- Divider / Note ---- */
+.eit-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.04);
+  margin: 2px 0;
+}
+
+.eit-property-note {
+  font-size: 0.78rem;
+  color: var(--text-muted, #9ca3af);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Hidden old elements */
+.eit-tip {
+  display: none;
+}
+
+.eit-field {
+  display: none;
+}
+
+.eit-field[hidden] {
+  display: none !important;
+}
+
+/* ---- Legend position unchanged ---- */
+#periodic-table.has-eit #table-legend {
+  grid-row: 1 / 4;
 }
 
 
+/* ==============================================
+   Element cell styles (unchanged)
+   ============================================== */
 
 .element {
   background-color: var(--element-bg);
@@ -38,6 +505,109 @@
 
   /* Container Query for perfect proportional text sizing */
   container-type: inline-size;
+}
+
+#periodic-table.eit-active .element {
+  transition:
+    opacity 0.15s ease,
+    filter 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+  contain: layout style;
+  will-change: opacity, transform;
+}
+
+#periodic-table .element.eit-colored {
+  background-color: var(--eit-cell-color) !important;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.15);
+}
+
+#periodic-table .element.eit-colored .symbol {
+  color: #111827;
+}
+
+#periodic-table .element.eit-colored .number,
+#periodic-table .element.eit-colored .name {
+  color: rgba(17, 24, 39, 0.72);
+}
+
+#periodic-table .element.eit-no-data {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  background-image: repeating-linear-gradient(-45deg,
+      rgba(148, 163, 184, 0.13) 0,
+      rgba(148, 163, 184, 0.13) 6px,
+      transparent 6px,
+      transparent 12px);
+}
+
+#periodic-table .element.eit-no-data .symbol,
+#periodic-table .element.eit-no-data .number,
+#periodic-table .element.eit-no-data .name {
+  color: #6b7280;
+}
+
+#periodic-table .element.eit-dimmed {
+  opacity: 0.22;
+  filter: grayscale(0.65);
+  transform: scale(0.96);
+}
+
+#periodic-table .element.eit-out-range {
+  opacity: 0.58;
+  filter: saturate(0.9);
+}
+
+#periodic-table .element.eit-focus {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.04);
+  z-index: 130;
+  box-shadow:
+    0 0 0 2px rgba(15, 23, 42, 0.2),
+    0 8px 22px rgba(15, 23, 42, 0.15);
+}
+
+#periodic-table.eit-active .element.eit-dimmed:hover {
+  transform: scale(0.96);
+  box-shadow: none;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1320px) {
+  .eit-controller {
+    gap: 4px;
+    padding: 0 2px;
+  }
+
+  .eit-property-trigger {
+    height: 28px;
+    font-size: 0.75rem;
+    padding: 0 10px;
+  }
+
+  .eit-mode-group {
+    height: 26px;
+    padding: 2px;
+  }
+
+  .eit-mode-btn {
+    font-size: 0.72rem;
+    padding: 0 8px;
+  }
+
+  .eit-reset-btn {
+    height: 26px;
+    font-size: 0.72rem;
+    padding: 0 10px;
+  }
+
+  .eit-chip {
+    height: 26px;
+    padding: 0 10px;
+    font-size: 0.72rem;
+  }
 }
 
 .element:hover {
@@ -181,11 +751,10 @@
   background-color: #d1e7dd;
 }
 
-.legend-swatch.reactive-nonmetal {
+.legend-swatch.other-nonmetal {
   background-color: #e2f0d9;
 }
 
-.legend-swatch.reactive-non-metal,
 .legend-swatch.non-metal {
   background-color: #e2f0d9;
 }
@@ -232,8 +801,7 @@
   color: #2e5d4b;
 }
 
-.element.reactive-nonmetal,
-.element.reactive-non-metal,
+.element.other-nonmetal,
 .element.non-metal,
 .element.polyatomic-nonmetal,
 .element.diatomic-nonmetal {
@@ -335,4 +903,25 @@
 .lanthanide,
 .actinide {
   background-color: #ebe5dc;
+}
+
+/* Range-block placeholders (La-Lu, Ac-Lr) — only styled when EIT is active */
+#periodic-table.eit-active .element.range-block {
+  background-color: #f3f4f6 !important;
+  color: #6b7280 !important;
+  background-image: repeating-linear-gradient(-45deg,
+      rgba(148, 163, 184, 0.13) 0,
+      rgba(148, 163, 184, 0.13) 6px,
+      transparent 6px,
+      transparent 12px);
+  border-color: rgba(0, 0, 0, 0.04) !important;
+  opacity: 0.22;
+  filter: grayscale(0.65);
+  transform: scale(0.96);
+}
+
+#periodic-table.eit-active .element.range-block .symbol,
+#periodic-table.eit-active .element.range-block .number,
+#periodic-table.eit-active .element.range-block .name {
+  color: #6b7280;
 }

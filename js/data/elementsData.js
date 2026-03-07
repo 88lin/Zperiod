@@ -1,8 +1,5 @@
-// ========================================
-// Element Data - Skeleton Format (Single Source of Truth)
-// Keyed by atomic number. All chemistry data lives here.
-// Grid layout data (row, column, series) lives in `elements` array.
-// ========================================
+// Electron affinity added for educational display.
+// Source strategy: broad table values from PeriodicTable.com / Wolfram ElementData; missing values kept as N/A.
 
 export const finallyData = {
   "1": {
@@ -10,12 +7,12 @@ export const finallyData = {
     "symbol": "H",
     "name": "Hydrogen",
     "level1_basic": {
-      "type": "Reactive nonmetal",
+      "type": "Other nonmetal",
       "group": 1,
       "period": "1",
       "phaseAtSTP": "Gas",
       "valenceElectrons": "1",
-      "commonIons": "H⁺ (Hydrogen), H⁻ (Hydride)"
+      "commonIons": "H⁺ (Hydrogen ion), H⁻ (Hydride)"
     },
     "level2_atomic": {
       "mass": {
@@ -29,31 +26,40 @@ export const finallyData = {
         {
           "name": "H-1",
           "neutron": "0n",
-          "percent": "Stable"
+          "percent": "Stable (99.98%)"
         },
         {
           "name": "H-2",
           "neutron": "1n",
-          "percent": "Stable"
+          "percent": "Stable (0.02%)"
         },
         {
           "name": "H-3",
           "neutron": "2n",
-          "percent": "Radioactive"
+          "percent": "Radioactive (trace)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "1s¹",
-        "oxidationStates": { "common": ["+1","-1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1",
+            "-1"
+          ],
+          "possible": [
+            "0"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.2,
         "firstIonization": "1312 kJ/mol",
-        "density": "0.0899 g/L",
-        "meltingPoint": "-259.1°C",
-        "boilingPoint": "-252.8°C"
+        "density": "0.08988 g/L",
+        "meltingPoint": "-259.16°C",
+        "boilingPoint": "-252.87°C",
+        "electronAffinity": "72.8 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -87,7 +93,8 @@ export const finallyData = {
       "period": "1",
       "phaseAtSTP": "Gas",
       "valenceElectrons": "2",
-      "commonIons": "None (does not form simple ions)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "0"
     },
     "level2_atomic": {
       "mass": {
@@ -101,31 +108,37 @@ export const finallyData = {
         {
           "name": "He-3",
           "neutron": "1n",
-          "percent": "Stable"
+          "percent": "Stable (0.0001%)"
         },
         {
           "name": "He-4",
           "neutron": "2n",
-          "percent": "Stable"
+          "percent": "Stable (99.9999%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "1s²",
-        "oxidationStates": { "common": ["0"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "0"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "2372 kJ/mol",
         "density": "0.1786 g/L",
-        "meltingPoint": "— (Pressurized only)",
-        "boilingPoint": "-268.9°C"
+        "meltingPoint": "— (0.95 K at 2.5 MPa)",
+        "boilingPoint": "-268.93°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
       "history": {
-        "discoveryYear": "1895 (Isolated)",
+        "discoveryYear": "1868 (spectral); 1895 (isolated)",
         "discoveredBy": "William Ramsay, Per Teodor Cleve",
         "namedBy": "Lockyer & Frankland"
       },
@@ -157,7 +170,7 @@ export const finallyData = {
     },
     "level2_atomic": {
       "mass": {
-        "highSchool": "6.94",
+        "highSchool": "6.941",
         "universityConventional": null,
         "universityInterval": null
       },
@@ -167,26 +180,32 @@ export const finallyData = {
         {
           "name": "Li-6",
           "neutron": "3n",
-          "percent": "Stable"
+          "percent": "Stable (7.6%)"
         },
         {
           "name": "Li-7",
           "neutron": "4n",
-          "percent": "Stable"
+          "percent": "Stable (92.4%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s¹",
-        "oxidationStates": { "common": ["+1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.98,
         "firstIonization": "520 kJ/mol",
         "density": "0.534 g/cm³",
         "meltingPoint": "180.5°C",
-        "boilingPoint": "1342°C"
+        "boilingPoint": "1342°C",
+        "electronAffinity": "59.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -241,14 +260,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s²",
-        "oxidationStates": { "common": ["+2"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1.57,
         "firstIonization": "900 kJ/mol",
         "density": "1.85 g/cm³",
         "meltingPoint": "1287°C",
-        "boilingPoint": "2469°C"
+        "boilingPoint": "2469°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -281,7 +306,8 @@ export const finallyData = {
       "period": "2",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "3",
-      "commonIons": "B³⁺ (Boron (rarely ionic))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3"
     },
     "level2_atomic": {
       "mass": {
@@ -295,26 +321,35 @@ export const finallyData = {
         {
           "name": "B-10",
           "neutron": "5n",
-          "percent": "Stable"
+          "percent": "Stable (19.9%)"
         },
         {
           "name": "B-11",
           "neutron": "6n",
-          "percent": "Stable"
+          "percent": "Stable (80.1%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s² 2p¹",
-        "oxidationStates": { "common": ["+3"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+1",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.04,
         "firstIonization": "801 kJ/mol",
         "density": "2.34 g/cm³",
         "meltingPoint": "2076°C",
-        "boilingPoint": "3927°C"
+        "boilingPoint": "3927°C",
+        "electronAffinity": "26.7 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -336,19 +371,21 @@ export const finallyData = {
         "Low toxicity as element",
         "some compounds toxic"
       ]
-    }
+    },
+    "chemistryNotes": "Boron does not form a simple B³⁺ ion in solution. Its chemistry is dominated by covalent bonding, particularly in borates (BO₃³⁻, B₄O₇²⁻) and boron hydrides."
   },
   "6": {
     "id": 6,
     "symbol": "C",
     "name": "Carbon",
     "level1_basic": {
-      "type": "Reactive nonmetal",
+      "type": "Other nonmetal",
       "group": 14,
       "period": "2",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "4",
-      "commonIons": "C⁴⁻ (Carbide (in ionic carbides))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "-4, +4"
     },
     "level2_atomic": {
       "mass": {
@@ -362,31 +399,45 @@ export const finallyData = {
         {
           "name": "C-12",
           "neutron": "6n",
-          "percent": "Stable"
+          "percent": "Stable (98.9%)"
         },
         {
           "name": "C-13",
           "neutron": "7n",
-          "percent": "Stable"
+          "percent": "Stable (1.1%)"
         },
         {
           "name": "C-14",
           "neutron": "8n",
-          "percent": "Radioactive"
+          "percent": "Radioactive (trace)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s² 2p²",
-        "oxidationStates": { "common": ["-4","+4"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "-4",
+            "+4"
+          ],
+          "possible": [
+            "-3",
+            "-2",
+            "-1",
+            "+1",
+            "+2",
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.55,
         "firstIonization": "1086 kJ/mol",
         "density": "2.26 g/cm³ (Graphite)",
         "meltingPoint": "Sublimes (~3642°C)",
-        "boilingPoint": "Sublimes"
+        "boilingPoint": "Sublimes",
+        "electronAffinity": "153.9 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -410,14 +461,15 @@ export const finallyData = {
         "CO/CO₂ from combustion",
         "dust inhalation"
       ]
-    }
+    },
+    "chemistryNotes": "Carbon does not form simple monatomic ions. C⁴⁻ (methanide) occurs only in a few ionic carbides (e.g., Al₄C₃). Carbon chemistry is overwhelmingly covalent."
   },
   "7": {
     "id": 7,
     "symbol": "N",
     "name": "Nitrogen",
     "level1_basic": {
-      "type": "Reactive nonmetal",
+      "type": "Other nonmetal",
       "group": 15,
       "period": "2",
       "phaseAtSTP": "Gas",
@@ -448,14 +500,26 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s² 2p³",
-        "oxidationStates": { "common": ["-3","+3","+5"], "possible": ["+1","+2","+4"] }
+        "oxidationStates": {
+          "common": [
+            "-3",
+            "+3",
+            "+5"
+          ],
+          "possible": [
+            "+1",
+            "+2",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 3.04,
         "firstIonization": "1402 kJ/mol",
-        "density": "1.25 g/L",
+        "density": "1.251 g/L",
         "meltingPoint": "-210.0°C",
-        "boilingPoint": "-195.8°C"
+        "boilingPoint": "-195.79°C",
+        "electronAffinity": "7 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -483,7 +547,7 @@ export const finallyData = {
     "symbol": "O",
     "name": "Oxygen",
     "level1_basic": {
-      "type": "Reactive nonmetal",
+      "type": "Other nonmetal",
       "group": 16,
       "period": "2",
       "phaseAtSTP": "Gas",
@@ -502,31 +566,42 @@ export const finallyData = {
         {
           "name": "O-16",
           "neutron": "8n",
-          "percent": "Stable"
+          "percent": "Stable (99.76%)"
         },
         {
           "name": "O-17",
           "neutron": "9n",
-          "percent": "Stable"
+          "percent": "Stable (0.04%)"
         },
         {
           "name": "O-18",
           "neutron": "10n",
-          "percent": "Stable"
+          "percent": "Stable (0.20%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s² 2p⁴",
-        "oxidationStates": { "common": ["-2"], "possible": ["-1","0","+1","+2"] }
+        "oxidationStates": {
+          "common": [
+            "-2"
+          ],
+          "possible": [
+            "-1",
+            "0",
+            "+1",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 3.44,
         "firstIonization": "1314 kJ/mol",
-        "density": "1.43 g/L",
-        "meltingPoint": "-218.8°C",
-        "boilingPoint": "-183.0°C"
+        "density": "1.429 g/L",
+        "meltingPoint": "-218.79°C",
+        "boilingPoint": "-182.96°C",
+        "electronAffinity": "141 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -564,7 +639,7 @@ export const finallyData = {
     },
     "level2_atomic": {
       "mass": {
-        "highSchool": "19.00",
+        "highSchool": "18.998",
         "universityConventional": null,
         "universityInterval": null
       },
@@ -581,14 +656,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s² 2p⁵",
-        "oxidationStates": { "common": ["-1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "-1"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 3.98,
         "firstIonization": "1681 kJ/mol",
-        "density": "1.70 g/L",
-        "meltingPoint": "-219.6°C",
-        "boilingPoint": "-188.1°C"
+        "density": "1.696 g/L",
+        "meltingPoint": "-219.67°C",
+        "boilingPoint": "-188.11°C",
+        "electronAffinity": "328 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -623,7 +704,8 @@ export const finallyData = {
       "period": "2",
       "phaseAtSTP": "Gas",
       "valenceElectrons": "8",
-      "commonIons": "None (does not form simple ions)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "0"
     },
     "level2_atomic": {
       "mass": {
@@ -637,31 +719,37 @@ export const finallyData = {
         {
           "name": "Ne-20",
           "neutron": "10n",
-          "percent": "Stable"
+          "percent": "Stable (90.5%)"
         },
         {
           "name": "Ne-21",
           "neutron": "11n",
-          "percent": "Stable"
+          "percent": "Stable (0.27%)"
         },
         {
           "name": "Ne-22",
           "neutron": "12n",
-          "percent": "Stable"
+          "percent": "Stable (9.25%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[He] 2s² 2p⁶",
-        "oxidationStates": { "common": ["0"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "0"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "2080 kJ/mol",
-        "density": "0.90 g/L",
-        "meltingPoint": "-248.6°C",
-        "boilingPoint": "-246.0°C"
+        "density": "0.9002 g/L",
+        "meltingPoint": "-248.59°C",
+        "boilingPoint": "-246.05°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -715,14 +803,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s¹",
-        "oxidationStates": { "common": ["+1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.93,
         "firstIonization": "496 kJ/mol",
         "density": "0.968 g/cm³",
-        "meltingPoint": "97.8°C",
-        "boilingPoint": "883°C"
+        "meltingPoint": "97.79°C",
+        "boilingPoint": "883°C",
+        "electronAffinity": "52.8 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -769,31 +863,37 @@ export const finallyData = {
         {
           "name": "Mg-24",
           "neutron": "12n",
-          "percent": "Stable"
+          "percent": "Stable (78.99%)"
         },
         {
           "name": "Mg-25",
           "neutron": "13n",
-          "percent": "Stable"
+          "percent": "Stable (10.00%)"
         },
         {
           "name": "Mg-26",
           "neutron": "14n",
-          "percent": "Stable"
+          "percent": "Stable (11.01%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s²",
-        "oxidationStates": { "common": ["+2"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1.31,
         "firstIonization": "738 kJ/mol",
         "density": "1.74 g/cm³",
         "meltingPoint": "650°C",
-        "boilingPoint": "1090°C"
+        "boilingPoint": "1090°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -847,14 +947,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s² 3p¹",
-        "oxidationStates": { "common": ["+3"], "possible": ["+1"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+1"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.61,
         "firstIonization": "578 kJ/mol",
         "density": "2.70 g/cm³",
         "meltingPoint": "660.3°C",
-        "boilingPoint": "2470°C"
+        "boilingPoint": "2519°C",
+        "electronAffinity": "42.5 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -887,7 +995,8 @@ export const finallyData = {
       "period": "3",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "4",
-      "commonIons": "Si⁴⁻ (Silicide (mostly covalent))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "-4, +4"
     },
     "level2_atomic": {
       "mass": {
@@ -918,14 +1027,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s² 3p²",
-        "oxidationStates": { "common": ["-4","+4"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "-4",
+            "+4"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.9,
         "firstIonization": "787 kJ/mol",
         "density": "2.33 g/cm³",
         "meltingPoint": "1414°C",
-        "boilingPoint": "3265°C"
+        "boilingPoint": "3265°C",
+        "electronAffinity": "133.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -946,14 +1064,15 @@ export const finallyData = {
       "hazards": [
         "Silicosis (chronic dust inhalation)"
       ]
-    }
+    },
+    "chemistryNotes": "Silicon does not form simple Si⁴⁻ or Si⁴⁺ ions. Its chemistry is dominated by covalent bonds, especially in silicates (SiO₄⁴⁻) and silicones."
   },
   "15": {
     "id": 15,
     "symbol": "P",
     "name": "Phosphorus",
     "level1_basic": {
-      "type": "Reactive nonmetal",
+      "type": "Other nonmetal",
       "group": 15,
       "period": "3",
       "phaseAtSTP": "Solid",
@@ -979,14 +1098,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s² 3p³",
-        "oxidationStates": { "common": ["-3","+3","+5"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "-3",
+            "+3",
+            "+5"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 2.19,
         "firstIonization": "1012 kJ/mol",
-        "density": "1.82 g/cm³ (White P)",
-        "meltingPoint": "44.1°C (White P)",
-        "boilingPoint": "280.5°C"
+        "density": "1.82 g/cm³ (white P)",
+        "meltingPoint": "44.15°C (white P)",
+        "boilingPoint": "280.5°C (white P)",
+        "electronAffinity": "71 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1015,7 +1142,7 @@ export const finallyData = {
     "symbol": "S",
     "name": "Sulfur",
     "level1_basic": {
-      "type": "Reactive nonmetal",
+      "type": "Other nonmetal",
       "group": 16,
       "period": "3",
       "phaseAtSTP": "Solid",
@@ -1056,14 +1183,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s² 3p⁴",
-        "oxidationStates": { "common": ["-2","+4","+6"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "-2",
+            "+4",
+            "+6"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.58,
         "firstIonization": "1000 kJ/mol",
-        "density": "2.07 g/cm³ (Alpha)",
+        "density": "2.07 g/cm³",
         "meltingPoint": "115.2°C",
-        "boilingPoint": "444.6°C"
+        "boilingPoint": "444.6°C",
+        "electronAffinity": "200 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1110,26 +1247,37 @@ export const finallyData = {
         {
           "name": "Cl-35",
           "neutron": "18n",
-          "percent": "Stable"
+          "percent": "Stable (75.8%)"
         },
         {
           "name": "Cl-37",
           "neutron": "20n",
-          "percent": "Stable"
+          "percent": "Stable (24.2%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s² 3p⁵",
-        "oxidationStates": { "common": ["-1","+1","+5","+7"], "possible": ["+3"] }
+        "oxidationStates": {
+          "common": [
+            "-1",
+            "+1",
+            "+5",
+            "+7"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 3.16,
         "firstIonization": "1251 kJ/mol",
         "density": "3.21 g/L",
         "meltingPoint": "-101.5°C",
-        "boilingPoint": "-34.0°C"
+        "boilingPoint": "-34.0°C",
+        "electronAffinity": "349 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1163,7 +1311,8 @@ export const finallyData = {
       "period": "3",
       "phaseAtSTP": "Gas",
       "valenceElectrons": "8",
-      "commonIons": "None (does not form simple ions)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "0"
     },
     "level2_atomic": {
       "mass": {
@@ -1177,31 +1326,37 @@ export const finallyData = {
         {
           "name": "Ar-36",
           "neutron": "18n",
-          "percent": "Stable"
+          "percent": "Stable (0.334%)"
         },
         {
           "name": "Ar-38",
           "neutron": "20n",
-          "percent": "Stable"
+          "percent": "Stable (0.063%)"
         },
         {
           "name": "Ar-40",
           "neutron": "22n",
-          "percent": "Stable"
+          "percent": "Stable (99.60%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Ne] 3s² 3p⁶",
-        "oxidationStates": { "common": ["0"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "0"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "1521 kJ/mol",
         "density": "1.78 g/L",
         "meltingPoint": "-189.4°C",
-        "boilingPoint": "-185.8°C"
+        "boilingPoint": "-185.8°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -1248,31 +1403,37 @@ export const finallyData = {
         {
           "name": "K-39",
           "neutron": "20n",
-          "percent": "Stable"
+          "percent": "Stable (93.26%)"
         },
         {
           "name": "K-40",
           "neutron": "21n",
-          "percent": "Radioactive"
+          "percent": "Radioactive (0.012%)"
         },
         {
           "name": "K-41",
           "neutron": "22n",
-          "percent": "Stable"
+          "percent": "Stable (6.73%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 4s¹",
-        "oxidationStates": { "common": ["+1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.82,
         "firstIonization": "419 kJ/mol",
         "density": "0.862 g/cm³",
         "meltingPoint": "63.5°C",
-        "boilingPoint": "759°C"
+        "boilingPoint": "759°C",
+        "electronAffinity": "48.4 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1320,46 +1481,47 @@ export const finallyData = {
         {
           "name": "Ca-40",
           "neutron": "20n",
-          "percent": "Stable"
+          "percent": "Stable (96.94%)"
         },
         {
           "name": "Ca-42",
           "neutron": "22n",
-          "percent": "Stable"
+          "percent": "Stable (0.647%)"
         },
         {
           "name": "Ca-43",
           "neutron": "23n",
-          "percent": "Stable"
+          "percent": "Stable (0.135%)"
         },
         {
           "name": "Ca-44",
           "neutron": "24n",
-          "percent": "Stable"
-        },
-        {
-          "name": "Ca-46",
-          "neutron": "26n",
-          "percent": "Stable"
+          "percent": "Stable (2.086%)"
         },
         {
           "name": "Ca-48",
           "neutron": "28n",
-          "percent": "Stable"
+          "percent": "Radioactive (0.187%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 4s²",
-        "oxidationStates": { "common": ["+2"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1,
         "firstIonization": "590 kJ/mol",
         "density": "1.55 g/cm³",
         "meltingPoint": "842°C",
-        "boilingPoint": "1484°C"
+        "boilingPoint": "1484°C",
+        "electronAffinity": "2.37 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1413,14 +1575,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹ 4s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2","+1"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+1"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.36,
         "firstIonization": "633 kJ/mol",
-        "density": "2.99 g/cm³",
+        "density": "2.985 g/cm³",
         "meltingPoint": "1541°C",
-        "boilingPoint": "2836°C"
+        "boilingPoint": "2836°C",
+        "electronAffinity": "18.1 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1492,14 +1663,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d² 4s²",
-        "oxidationStates": { "common": ["+4"], "possible": ["+3","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+4"
+          ],
+          "possible": [
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.54,
         "firstIonization": "659 kJ/mol",
-        "density": "4.51 g/cm³",
+        "density": "4.507 g/cm³",
         "meltingPoint": "1668°C",
-        "boilingPoint": "3287°C"
+        "boilingPoint": "3287°C",
+        "electronAffinity": "7.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1558,14 +1738,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d³ 4s²",
-        "oxidationStates": { "common": ["+5","+4","+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+5",
+            "+4",
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.63,
         "firstIonization": "651 kJ/mol",
         "density": "6.11 g/cm³",
         "meltingPoint": "1910°C",
-        "boilingPoint": "3407°C"
+        "boilingPoint": "3407°C",
+        "electronAffinity": "50.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1631,15 +1821,27 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Ar] 3d⁵ 4s¹ [Exception]",
-        "oxidationStates": { "common": ["+3","+6"], "possible": ["+2","+4","+5"] }
+        "configuration": "[Ar] 3d⁵ 4s¹",
+        "oxidationStates": {
+          "common": [
+            "+3",
+            "+6"
+          ],
+          "possible": [
+            "+1",
+            "+2",
+            "+4",
+            "+5"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.66,
         "firstIonization": "653 kJ/mol",
         "density": "7.19 g/cm³",
         "meltingPoint": "1907°C",
-        "boilingPoint": "2671°C"
+        "boilingPoint": "2671°C",
+        "electronAffinity": "64.3 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1658,10 +1860,12 @@ export const finallyData = {
         "Pigments"
       ],
       "hazards": [
-        "Cr(VI) is carcinogenic",
-        "Cr(III) is essential trace element"
+        "Cr(VI) is carcinogenic and highly toxic",
+        "Cr(III) essentiality debated in modern literature"
       ]
-    }
+    },
+    "biologicalRole": "Cr(III) was traditionally considered an essential trace element, but modern reviews (EFSA 2014, NAS 2001) have questioned this; no clear biochemical function has been established.",
+    "chemistryNotes": "Cr(VI) compounds (chromates, dichromates) are strong oxidizers and known human carcinogens. Cr(III) is much less toxic."
   },
   "25": {
     "id": 25,
@@ -1694,14 +1898,27 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d⁵ 4s²",
-        "oxidationStates": { "common": ["+2","+4","+7"], "possible": ["+1","+3","+5","+6"] }
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+4",
+            "+7"
+          ],
+          "possible": [
+            "+1",
+            "+3",
+            "+5",
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.55,
         "firstIonization": "717 kJ/mol",
         "density": "7.21 g/cm³",
         "meltingPoint": "1246°C",
-        "boilingPoint": "2061°C"
+        "boilingPoint": "2061°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -1770,14 +1987,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d⁶ 4s²",
-        "oxidationStates": { "common": ["+2","+3"], "possible": ["+6"] }
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+3"
+          ],
+          "possible": [
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.83,
         "firstIonization": "763 kJ/mol",
-        "density": "7.87 g/cm³",
+        "density": "7.874 g/cm³",
         "meltingPoint": "1538°C",
-        "boilingPoint": "2862°C"
+        "boilingPoint": "2862°C",
+        "electronAffinity": "15.7 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1832,14 +2058,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d⁷ 4s²",
-        "oxidationStates": { "common": ["+2","+3"], "possible": ["+1","+4"] }
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+3"
+          ],
+          "possible": [
+            "+1",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.88,
         "firstIonization": "760 kJ/mol",
         "density": "8.90 g/cm³",
         "meltingPoint": "1495°C",
-        "boilingPoint": "2927°C"
+        "boilingPoint": "2927°C",
+        "electronAffinity": "63.7 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1915,14 +2151,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d⁸ 4s²",
-        "oxidationStates": { "common": ["+2"], "possible": ["+1","+3"] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+1",
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.91,
         "firstIonization": "737 kJ/mol",
-        "density": "8.90 g/cm³",
+        "density": "8.908 g/cm³",
         "meltingPoint": "1455°C",
-        "boilingPoint": "2730°C"
+        "boilingPoint": "2913°C",
+        "electronAffinity": "112 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -1982,15 +2227,24 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Ar] 3d¹⁰ 4s¹ [Exception]",
-        "oxidationStates": { "common": ["+1","+2"], "possible": ["+3"] }
+        "configuration": "[Ar] 3d¹⁰ 4s¹",
+        "oxidationStates": {
+          "common": [
+            "+1",
+            "+2"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.9,
         "firstIonization": "746 kJ/mol",
         "density": "8.96 g/cm³",
-        "meltingPoint": "1085°C",
-        "boilingPoint": "2562°C"
+        "meltingPoint": "1084.6°C",
+        "boilingPoint": "2562°C",
+        "electronAffinity": "118.4 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2065,14 +2319,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹⁰ 4s²",
-        "oxidationStates": { "common": ["+2"], "possible": ["+1"] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+1"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.65,
         "firstIonization": "906 kJ/mol",
         "density": "7.14 g/cm³",
         "meltingPoint": "419.5°C",
-        "boilingPoint": "907°C"
+        "boilingPoint": "907°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -2131,14 +2393,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹⁰ 4s² 4p¹",
-        "oxidationStates": { "common": ["+3"], "possible": ["+1","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+1",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.81,
         "firstIonization": "579 kJ/mol",
         "density": "5.91 g/cm³",
-        "meltingPoint": "29.8°C [Melts in hand]",
-        "boilingPoint": "2400°C"
+        "meltingPoint": "29.76°C",
+        "boilingPoint": "2204°C",
+        "electronAffinity": "28.9 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2171,7 +2442,8 @@ export const finallyData = {
       "period": "4",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "4",
-      "commonIons": "Ge⁴⁺ (Germanium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+4, +2"
     },
     "level2_atomic": {
       "mass": {
@@ -2207,14 +2479,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹⁰ 4s² 4p²",
-        "oxidationStates": { "common": ["+4","+2"], "possible": ["-4"] }
+        "oxidationStates": {
+          "common": [
+            "+4",
+            "+2"
+          ],
+          "possible": [
+            "-4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.01,
         "firstIonization": "762 kJ/mol",
-        "density": "5.32 g/cm³",
-        "meltingPoint": "938°C",
-        "boilingPoint": "2833°C"
+        "density": "5.323 g/cm³",
+        "meltingPoint": "938.3°C",
+        "boilingPoint": "2833°C",
+        "electronAffinity": "119 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2247,7 +2528,8 @@ export const finallyData = {
       "period": "4",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "5",
-      "commonIons": "As³⁻ (Arsenide), As³⁺ (Arsenic(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "-3, +3, +5"
     },
     "level2_atomic": {
       "mass": {
@@ -2268,14 +2550,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹⁰ 4s² 4p³",
-        "oxidationStates": { "common": ["-3","+3","+5"], "possible": ["+1"] }
+        "oxidationStates": {
+          "common": [
+            "-3",
+            "+3",
+            "+5"
+          ],
+          "possible": [
+            "+1"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.18,
         "firstIonization": "947 kJ/mol",
-        "density": "5.73 g/cm³",
-        "meltingPoint": "Sublimes (817°C at high pressure)",
-        "boilingPoint": "Sublimes (614°C)"
+        "density": "5.727 g/cm³",
+        "meltingPoint": "Sublimes at 615°C",
+        "boilingPoint": "Sublimes",
+        "electronAffinity": "78 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2304,12 +2596,13 @@ export const finallyData = {
     "symbol": "Se",
     "name": "Selenium",
     "level1_basic": {
-      "type": "Reactive nonmetal",
+      "type": "Other nonmetal",
       "group": 16,
       "period": "4",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "6",
-      "commonIons": "Se²⁻ (Selenide)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "-2, +4, +6"
     },
     "level2_atomic": {
       "mass": {
@@ -2355,14 +2648,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹⁰ 4s² 4p⁴",
-        "oxidationStates": { "common": ["-2","+4","+6"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "-2",
+            "+4",
+            "+6"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.55,
         "firstIonization": "941 kJ/mol",
-        "density": "4.81 g/cm³",
-        "meltingPoint": "221°C",
-        "boilingPoint": "685°C"
+        "density": "4.81 g/cm³ (gray)",
+        "meltingPoint": "220.8°C",
+        "boilingPoint": "685°C",
+        "electronAffinity": "195 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2422,14 +2725,25 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹⁰ 4s² 4p⁵",
-        "oxidationStates": { "common": ["-1","+1","+5","+7"], "possible": ["+3"] }
+        "oxidationStates": {
+          "common": [
+            "-1",
+            "+1",
+            "+5",
+            "+7"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.96,
         "firstIonization": "1140 kJ/mol",
-        "density": "3.10 g/cm³ (Liquid)",
+        "density": "3.1028 g/cm³ (liquid)",
         "meltingPoint": "-7.2°C",
-        "boilingPoint": "58.8°C"
+        "boilingPoint": "58.8°C",
+        "electronAffinity": "324.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2463,7 +2777,8 @@ export const finallyData = {
       "period": "4",
       "phaseAtSTP": "Gas",
       "valenceElectrons": "8",
-      "commonIons": "None (does not form simple ions)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "0"
     },
     "level2_atomic": {
       "mass": {
@@ -2509,14 +2824,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Ar] 3d¹⁰ 4s² 4p⁶",
-        "oxidationStates": { "common": ["0"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "0"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 3,
         "firstIonization": "1351 kJ/mol",
-        "density": "3.75 g/L",
-        "meltingPoint": "-157.4°C",
-        "boilingPoint": "-153.2°C"
+        "density": "3.749 g/L",
+        "meltingPoint": "-157.37°C",
+        "boilingPoint": "-153.42°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -2575,14 +2898,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 5s¹",
-        "oxidationStates": { "common": ["+1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.82,
         "firstIonization": "403 kJ/mol",
-        "density": "1.53 g/cm³",
+        "density": "1.532 g/cm³",
         "meltingPoint": "39.3°C",
-        "boilingPoint": "688°C"
+        "boilingPoint": "688°C",
+        "electronAffinity": "46.9 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2651,14 +2980,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 5s²",
-        "oxidationStates": { "common": ["+2"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.95,
         "firstIonization": "550 kJ/mol",
         "density": "2.64 g/cm³",
         "meltingPoint": "777°C",
-        "boilingPoint": "1382°C"
+        "boilingPoint": "1377°C",
+        "electronAffinity": "5.03 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2712,14 +3047,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹ 5s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2","+1"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+1"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.22,
         "firstIonization": "600 kJ/mol",
-        "density": "4.47 g/cm³",
+        "density": "4.472 g/cm³",
         "meltingPoint": "1526°C",
-        "boilingPoint": "2930°C"
+        "boilingPoint": "3345°C",
+        "electronAffinity": "29.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2753,7 +3097,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Zr⁴⁺ (Zirconium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+4"
     },
     "level2_atomic": {
       "mass": {
@@ -2789,14 +3134,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d² 5s²",
-        "oxidationStates": { "common": ["+4"], "possible": ["+3","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+4"
+          ],
+          "possible": [
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.33,
         "firstIonization": "640 kJ/mol",
         "density": "6.52 g/cm³",
         "meltingPoint": "1855°C",
-        "boilingPoint": "4409°C"
+        "boilingPoint": "4377°C",
+        "electronAffinity": "41.1 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2830,7 +3184,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Nb³⁺ (Niobium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+5"
     },
     "level2_atomic": {
       "mass": {
@@ -2850,15 +3205,25 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Kr] 4d⁴ 5s¹ [Exception]",
-        "oxidationStates": { "common": ["+5"], "possible": ["+4","+3","+2"] }
+        "configuration": "[Kr] 4d⁴ 5s¹",
+        "oxidationStates": {
+          "common": [
+            "+5"
+          ],
+          "possible": [
+            "+4",
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.6,
         "firstIonization": "652 kJ/mol",
         "density": "8.57 g/cm³",
         "meltingPoint": "2477°C",
-        "boilingPoint": "4744°C"
+        "boilingPoint": "4744°C",
+        "electronAffinity": "86.1 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2891,7 +3256,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Mo²⁺ (Molybdenum(II)), Mo³⁺ (Molybdenum(III)), Mo⁴⁺ (Molybdenum(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+6"
     },
     "level2_atomic": {
       "mass": {
@@ -2941,15 +3307,26 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Kr] 4d⁵ 5s¹ [Exception]",
-        "oxidationStates": { "common": ["+6"], "possible": ["+4","+5","+3","+2"] }
+        "configuration": "[Kr] 4d⁵ 5s¹",
+        "oxidationStates": {
+          "common": [
+            "+6"
+          ],
+          "possible": [
+            "+4",
+            "+5",
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.16,
         "firstIonization": "684 kJ/mol",
         "density": "10.28 g/cm³",
         "meltingPoint": "2623°C",
-        "boilingPoint": "4639°C"
+        "boilingPoint": "4639°C",
+        "electronAffinity": "71.9 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -2982,7 +3359,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Tc⁴⁺ (Technetium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+7"
     },
     "level2_atomic": {
       "mass": {
@@ -2992,7 +3370,17 @@ export const finallyData = {
       },
       "protons": 43,
       "electronsNeutral": 43,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
+        {
+          "name": "Tc-97",
+          "neutron": "54n",
+          "percent": "Radioactive"
+        },
+        {
+          "name": "Tc-98",
+          "neutron": "55n",
+          "percent": "Radioactive"
+        },
         {
           "name": "Tc-99",
           "neutron": "56n",
@@ -3003,14 +3391,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d⁵ 5s²",
-        "oxidationStates": { "common": ["+7"], "possible": ["+4","+6","+5"] }
+        "oxidationStates": {
+          "common": [
+            "+7"
+          ],
+          "possible": [
+            "+4",
+            "+6",
+            "+5"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.9,
         "firstIonization": "702 kJ/mol",
-        "density": "11.50 g/cm³",
+        "density": "11.0 g/cm³",
         "meltingPoint": "2157°C",
-        "boilingPoint": "4265°C"
+        "boilingPoint": "4265°C",
+        "electronAffinity": "53 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3029,7 +3427,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive (radiotoxicity depends on isotope)"
       ]
-    }
+    },
+    "isotopeNotes": "Technetium has no stable isotopes. Tc-97, Tc-98, and Tc-99 are the longest-lived. Tc-99m is widely used in medical imaging."
   },
   "44": {
     "id": 44,
@@ -3041,7 +3440,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Ru³⁺ (Ruthenium(III)), Ru⁴⁺ (Ruthenium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3, +4"
     },
     "level2_atomic": {
       "mass": {
@@ -3091,15 +3491,27 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Kr] 4d⁷ 5s¹ [Exception]",
-        "oxidationStates": { "common": ["+3","+4"], "possible": ["+2","+6","+7","+8"] }
+        "configuration": "[Kr] 4d⁷ 5s¹ [exc]",
+        "oxidationStates": {
+          "common": [
+            "+3",
+            "+4"
+          ],
+          "possible": [
+            "+2",
+            "+6",
+            "+7",
+            "+8"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.2,
         "firstIonization": "710 kJ/mol",
         "density": "12.45 g/cm³",
         "meltingPoint": "2334°C",
-        "boilingPoint": "4150°C"
+        "boilingPoint": "4150°C",
+        "electronAffinity": "101.3 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3132,7 +3544,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Rh³⁺ (Rhodium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3"
     },
     "level2_atomic": {
       "mass": {
@@ -3152,15 +3565,27 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Kr] 4d⁸ 5s¹ [Exception]",
-        "oxidationStates": { "common": ["+3"], "possible": ["+1","+2","+4","+5"] }
+        "configuration": "[Kr] 4d⁸ 5s¹",
+        "configurationNote": "Observed anomalous ground-state configuration.",
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+1",
+            "+2",
+            "+4",
+            "+5"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.28,
         "firstIonization": "720 kJ/mol",
         "density": "12.41 g/cm³",
-        "meltingPoint": "1964°C",
-        "boilingPoint": "3695°C"
+        "meltingPoint": "1963°C",
+        "boilingPoint": "3695°C",
+        "electronAffinity": "109.7 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3192,7 +3617,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer d only here)",
-      "commonIons": "Pd²⁺ (Palladium(II)), Pd⁴⁺ (Palladium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+2"
     },
     "level2_atomic": {
       "mass": {
@@ -3237,15 +3663,26 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Kr] 4d¹⁰ [Exception - empty s-orbital]",
-        "oxidationStates": { "common": ["+2"], "possible": ["0","+1","+3","+4"] }
+        "configuration": "[Kr] 4d¹⁰",
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "0",
+            "+1",
+            "+3",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.2,
         "firstIonization": "804 kJ/mol",
-        "density": "12.02 g/cm³",
-        "meltingPoint": "1555°C",
-        "boilingPoint": "2963°C"
+        "density": "12.023 g/cm³",
+        "meltingPoint": "1554.9°C",
+        "boilingPoint": "2963°C",
+        "electronAffinity": "53.7 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3305,15 +3742,24 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Kr] 4d¹⁰ 5s¹ [Exception]",
-        "oxidationStates": { "common": ["+1"], "possible": ["+2","+3"] }
+        "configuration": "[Kr] 4d¹⁰ 5s¹",
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": [
+            "+2",
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.93,
         "firstIonization": "731 kJ/mol",
         "density": "10.49 g/cm³",
-        "meltingPoint": "962°C",
-        "boilingPoint": "2162°C"
+        "meltingPoint": "961.8°C",
+        "boilingPoint": "2162°C",
+        "electronAffinity": "125.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3394,14 +3840,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹⁰ 5s²",
-        "oxidationStates": { "common": ["+2"], "possible": ["+1"] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+1"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.69,
         "firstIonization": "868 kJ/mol",
         "density": "8.65 g/cm³",
-        "meltingPoint": "321°C",
-        "boilingPoint": "767°C"
+        "meltingPoint": "321.1°C",
+        "boilingPoint": "767°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -3462,14 +3916,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹⁰ 5s² 5p¹",
-        "oxidationStates": { "common": ["+3"], "possible": ["+1","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+1",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.78,
         "firstIonization": "558 kJ/mol",
         "density": "7.31 g/cm³",
         "meltingPoint": "156.6°C",
-        "boilingPoint": "2072°C"
+        "boilingPoint": "2072°C",
+        "electronAffinity": "28.9 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3568,14 +4031,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹⁰ 5s² 5p²",
-        "oxidationStates": { "common": ["+2","+4"], "possible": ["-4"] }
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+4"
+          ],
+          "possible": [
+            "-4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.96,
         "firstIonization": "709 kJ/mol",
-        "density": "7.31 g/cm³ (White Sn)",
-        "meltingPoint": "232°C",
-        "boilingPoint": "2602°C"
+        "density": "7.265 g/cm³ (white)",
+        "meltingPoint": "231.9°C",
+        "boilingPoint": "2602°C",
+        "electronAffinity": "107.3 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3635,14 +4107,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹⁰ 5s² 5p³",
-        "oxidationStates": { "common": ["-3","+3","+5"], "possible": ["+1"] }
+        "oxidationStates": {
+          "common": [
+            "-3",
+            "+3",
+            "+5"
+          ],
+          "possible": [
+            "+1"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.05,
         "firstIonization": "834 kJ/mol",
-        "density": "6.70 g/cm³",
-        "meltingPoint": "631°C",
-        "boilingPoint": "1587°C"
+        "density": "6.697 g/cm³",
+        "meltingPoint": "630.6°C",
+        "boilingPoint": "1587°C",
+        "electronAffinity": "103.2 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3712,14 +4194,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹⁰ 5s² 5p⁴",
-        "oxidationStates": { "common": ["-2","+4","+6"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "-2",
+            "+4",
+            "+6"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.1,
         "firstIonization": "869 kJ/mol",
         "density": "6.24 g/cm³",
-        "meltingPoint": "450°C",
-        "boilingPoint": "988°C"
+        "meltingPoint": "449.5°C",
+        "boilingPoint": "988°C",
+        "electronAffinity": "190.2 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3774,14 +4266,25 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹⁰ 5s² 5p⁵",
-        "oxidationStates": { "common": ["-1","+1","+5","+7"], "possible": ["+3"] }
+        "oxidationStates": {
+          "common": [
+            "-1",
+            "+1",
+            "+5",
+            "+7"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.66,
         "firstIonization": "1008 kJ/mol",
-        "density": "4.93 g/cm³",
+        "density": "4.933 g/cm³",
         "meltingPoint": "113.7°C",
-        "boilingPoint": "184.3°C"
+        "boilingPoint": "184.3°C",
+        "electronAffinity": "295.2 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -3815,7 +4318,8 @@ export const finallyData = {
       "period": "5",
       "phaseAtSTP": "Gas",
       "valenceElectrons": "8",
-      "commonIons": "None (does not form simple ions)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "0"
     },
     "level2_atomic": {
       "mass": {
@@ -3876,14 +4380,25 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Kr] 4d¹⁰ 5s² 5p⁶",
-        "oxidationStates": { "common": ["0"], "possible": ["+2","+4","+6","+8"] }
+        "oxidationStates": {
+          "common": [
+            "0"
+          ],
+          "possible": [
+            "+2",
+            "+4",
+            "+6",
+            "+8"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.6,
         "firstIonization": "1170 kJ/mol",
-        "density": "5.90 g/L",
-        "meltingPoint": "-111.8°C",
-        "boilingPoint": "-108.1°C"
+        "density": "5.894 g/L",
+        "meltingPoint": "-111.75°C",
+        "boilingPoint": "-108.1°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -3938,14 +4453,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 6s¹",
-        "oxidationStates": { "common": ["+1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.79,
         "firstIonization": "376 kJ/mol",
         "density": "1.93 g/cm³",
-        "meltingPoint": "28.5°C [Melts near room temp]",
-        "boilingPoint": "671°C"
+        "meltingPoint": "28.44°C",
+        "boilingPoint": "671°C",
+        "electronAffinity": "45.5 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4018,14 +4539,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 6s²",
-        "oxidationStates": { "common": ["+2"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.89,
         "firstIonization": "503 kJ/mol",
-        "density": "3.62 g/cm³",
+        "density": "3.51 g/cm³",
         "meltingPoint": "727°C",
-        "boilingPoint": "1897°C"
+        "boilingPoint": "1845°C",
+        "electronAffinity": "13.95 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4055,11 +4582,13 @@ export const finallyData = {
     "name": "Lanthanum",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 3,
+      "group": null,
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "La³⁺ (Lanthanum)"
+      "commonIons": "La³⁺ (Lanthanum)",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4085,14 +4614,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 5d¹ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.1,
         "firstIonization": "538 kJ/mol",
-        "density": "6.15 g/cm³",
+        "density": "6.162 g/cm³",
         "meltingPoint": "920°C",
-        "boilingPoint": "3464°C"
+        "boilingPoint": "3464°C",
+        "electronAffinity": "48 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4113,7 +4650,14 @@ export const finallyData = {
         "Low toxicity",
         "dust is flammable"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "6",
+      "fallbackDisplayColumn": 3
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "58": {
     "id": 58,
@@ -4121,11 +4665,13 @@ export const finallyData = {
     "name": "Cerium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 4,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Ce³⁺ (Cerium(III)), Ce⁴⁺ (Cerium(IV))"
+      "commonIons": "Ce³⁺ (Cerium(III)), Ce⁴⁺ (Cerium(IV))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4161,14 +4707,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹ 5d¹ 6s²",
-        "oxidationStates": { "common": ["+3","+4"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3",
+            "+4"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.12,
         "firstIonization": "534 kJ/mol",
-        "density": "6.77 g/cm³",
-        "meltingPoint": "795°C",
-        "boilingPoint": "3443°C"
+        "density": "6.770 g/cm³",
+        "meltingPoint": "799°C",
+        "boilingPoint": "3443°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4190,7 +4745,14 @@ export const finallyData = {
         "Pyrophoric (sparks when struck)",
         "low toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 4
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "59": {
     "id": 59,
@@ -4198,11 +4760,13 @@ export const finallyData = {
     "name": "Praseodymium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 5,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Pr³⁺ (Praseodymium(III))"
+      "commonIons": "Pr³⁺ (Praseodymium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4223,14 +4787,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f³ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+4","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+4",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.13,
         "firstIonization": "527 kJ/mol",
         "density": "6.77 g/cm³",
-        "meltingPoint": "935°C",
-        "boilingPoint": "3520°C"
+        "meltingPoint": "931°C",
+        "boilingPoint": "3520°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4251,7 +4824,14 @@ export const finallyData = {
         "Low toxicity",
         "dust is flammable"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 5
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "60": {
     "id": 60,
@@ -4259,11 +4839,13 @@ export const finallyData = {
     "name": "Neodymium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 6,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Nd³⁺ (Neodymium(III))"
+      "commonIons": "Nd³⁺ (Neodymium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4309,14 +4891,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f⁴ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.14,
         "firstIonization": "533 kJ/mol",
         "density": "7.01 g/cm³",
-        "meltingPoint": "1024°C",
-        "boilingPoint": "3074°C"
+        "meltingPoint": "1016°C",
+        "boilingPoint": "3074°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4337,7 +4927,14 @@ export const finallyData = {
         "Dust is flammable",
         "magnets can cause pinching injuries"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 6
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "61": {
     "id": 61,
@@ -4345,11 +4942,13 @@ export const finallyData = {
     "name": "Promethium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 7,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Pm³⁺ (Promethium(III))"
+      "commonIons": "Pm³⁺ (Promethium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4359,10 +4958,15 @@ export const finallyData = {
       },
       "protons": 61,
       "electronsNeutral": 61,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Pm-145",
           "neutron": "84n",
+          "percent": "Radioactive"
+        },
+        {
+          "name": "Pm-147",
+          "neutron": "86n",
           "percent": "Radioactive"
         }
       ]
@@ -4370,14 +4974,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f⁵ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.13,
         "firstIonization": "540 kJ/mol",
         "density": "7.26 g/cm³",
         "meltingPoint": "1042°C",
-        "boilingPoint": "3000°C"
+        "boilingPoint": "3000°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4396,7 +5008,15 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Promethium has no stable isotopes. Pm-145 (t½ 17.7 y) and Pm-147 (t½ 2.62 y) are the longest-lived.",
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 7
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "62": {
     "id": 62,
@@ -4404,11 +5024,13 @@ export const finallyData = {
     "name": "Samarium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 8,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Sm²⁺ (Samarium(II)), Sm³⁺ (Samarium(III))"
+      "commonIons": "Sm²⁺ (Samarium(II)), Sm³⁺ (Samarium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4454,14 +5076,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f⁶ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.17,
         "firstIonization": "545 kJ/mol",
         "density": "7.52 g/cm³",
         "meltingPoint": "1072°C",
-        "boilingPoint": "1794°C"
+        "boilingPoint": "1794°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4480,7 +5110,14 @@ export const finallyData = {
       "hazards": [
         "Low toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 8
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "63": {
     "id": 63,
@@ -4488,11 +5125,13 @@ export const finallyData = {
     "name": "Europium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 9,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Eu²⁺ (Europium(II)), Eu³⁺ (Europium(III))"
+      "commonIons": "Eu²⁺ (Europium(II)), Eu³⁺ (Europium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4518,14 +5157,21 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f⁷ 6s²",
-        "oxidationStates": { "common": ["+2","+3"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+3"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1.2,
         "firstIonization": "547 kJ/mol",
-        "density": "5.24 g/cm³",
-        "meltingPoint": "822°C",
-        "boilingPoint": "1529°C"
+        "density": "5.244 g/cm³",
+        "meltingPoint": "826°C",
+        "boilingPoint": "1529°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4545,7 +5191,14 @@ export const finallyData = {
         "Reacts vividly with water",
         "non-toxic"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 9
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "64": {
     "id": 64,
@@ -4553,11 +5206,13 @@ export const finallyData = {
     "name": "Gadolinium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 10,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d + f)",
-      "commonIons": "Gd³⁺ (Gadolinium(III))"
+      "commonIons": "Gd³⁺ (Gadolinium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4602,15 +5257,24 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Xe] 4f⁷ 5d¹ 6s² [Stable half-shell]",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "configuration": "[Xe] 4f⁷ 5d¹ 6s²",
+        "configurationNote": "Anomalous configuration associated with extra stability of the half-filled 4f subshell.",
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.2,
         "firstIonization": "593 kJ/mol",
         "density": "7.90 g/cm³",
         "meltingPoint": "1313°C",
-        "boilingPoint": "3273°C"
+        "boilingPoint": "3273°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4631,7 +5295,14 @@ export const finallyData = {
         "Free ion is toxic",
         "chelated form used medically"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 10
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "65": {
     "id": 65,
@@ -4639,11 +5310,13 @@ export const finallyData = {
     "name": "Terbium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 11,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Tb³⁺ (Terbium(III))"
+      "commonIons": "Tb³⁺ (Terbium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4664,14 +5337,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f⁹ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+4","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+4",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.1,
         "firstIonization": "566 kJ/mol",
         "density": "8.23 g/cm³",
         "meltingPoint": "1356°C",
-        "boilingPoint": "3230°C"
+        "boilingPoint": "3230°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4690,7 +5372,14 @@ export const finallyData = {
       "hazards": [
         "Low toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 11
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "66": {
     "id": 66,
@@ -4698,11 +5387,13 @@ export const finallyData = {
     "name": "Dysprosium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 12,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Dy³⁺ (Dysprosium(III))"
+      "commonIons": "Dy³⁺ (Dysprosium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4753,14 +5444,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁰ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.22,
         "firstIonization": "573 kJ/mol",
-        "density": "8.54 g/cm³",
+        "density": "8.540 g/cm³",
         "meltingPoint": "1412°C",
-        "boilingPoint": "2567°C"
+        "boilingPoint": "2567°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4780,7 +5479,14 @@ export const finallyData = {
         "Low toxicity",
         "dust is flammable"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 12
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "67": {
     "id": 67,
@@ -4788,11 +5494,13 @@ export const finallyData = {
     "name": "Holmium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 13,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Ho³⁺ (Holmium(III))"
+      "commonIons": "Ho³⁺ (Holmium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4813,14 +5521,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹¹ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.23,
         "firstIonization": "581 kJ/mol",
-        "density": "8.80 g/cm³",
+        "density": "8.795 g/cm³",
         "meltingPoint": "1474°C",
-        "boilingPoint": "2700°C"
+        "boilingPoint": "2700°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4839,7 +5555,14 @@ export const finallyData = {
       "hazards": [
         "Low toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 13
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "68": {
     "id": 68,
@@ -4847,11 +5570,13 @@ export const finallyData = {
     "name": "Erbium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 14,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Er³⁺ (Erbium(III))"
+      "commonIons": "Er³⁺ (Erbium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4897,14 +5622,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹² 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.24,
         "firstIonization": "589 kJ/mol",
-        "density": "9.07 g/cm³",
+        "density": "9.066 g/cm³",
         "meltingPoint": "1529°C",
-        "boilingPoint": "2868°C"
+        "boilingPoint": "2868°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4924,7 +5657,14 @@ export const finallyData = {
       "hazards": [
         "Low toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 14
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "69": {
     "id": 69,
@@ -4932,11 +5672,13 @@ export const finallyData = {
     "name": "Thulium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 15,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Tm³⁺ (Thulium(III))"
+      "commonIons": "Tm³⁺ (Thulium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -4957,14 +5699,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹³ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.25,
         "firstIonization": "597 kJ/mol",
         "density": "9.32 g/cm³",
         "meltingPoint": "1545°C",
-        "boilingPoint": "1950°C"
+        "boilingPoint": "1950°C",
+        "electronAffinity": "50 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -4984,7 +5734,14 @@ export const finallyData = {
       "hazards": [
         "Low toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 15
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "70": {
     "id": 70,
@@ -4992,11 +5749,13 @@ export const finallyData = {
     "name": "Ytterbium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 16,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Yb²⁺ (Ytterbium(II)), Yb³⁺ (Ytterbium(III))"
+      "commonIons": "Yb²⁺ (Ytterbium(II)), Yb³⁺ (Ytterbium(III))",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -5047,14 +5806,21 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 6s²",
-        "oxidationStates": { "common": ["+2","+3"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+3"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1.1,
         "firstIonization": "603 kJ/mol",
         "density": "6.90 g/cm³",
         "meltingPoint": "824°C",
-        "boilingPoint": "1196°C"
+        "boilingPoint": "1196°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -5074,7 +5840,14 @@ export const finallyData = {
       "hazards": [
         "Eye/skin irritant"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 16
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "71": {
     "id": 71,
@@ -5082,11 +5855,13 @@ export const finallyData = {
     "name": "Lutetium",
     "level1_basic": {
       "type": "Lanthanide",
-      "group": 17,
-      "period": "9",
+      "group": null,
+      "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Lu³⁺ (Lutetium)"
+      "commonIons": "Lu³⁺ (Lutetium)",
+      "block": "f",
+      "series": "Lanthanide"
     },
     "level2_atomic": {
       "mass": {
@@ -5112,14 +5887,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹ 6s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.27,
         "firstIonization": "524 kJ/mol",
-        "density": "9.84 g/cm³",
+        "density": "9.841 g/cm³",
         "meltingPoint": "1663°C",
-        "boilingPoint": "3402°C"
+        "boilingPoint": "3402°C",
+        "electronAffinity": "31 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5140,7 +5923,14 @@ export const finallyData = {
       "hazards": [
         "Low toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "9",
+      "fallbackDisplayColumn": 17
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "72": {
     "id": 72,
@@ -5152,7 +5942,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Hf⁴⁺ (Hafnium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+4"
     },
     "level2_atomic": {
       "mass": {
@@ -5193,14 +5984,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d² 6s²",
-        "oxidationStates": { "common": ["+4"], "possible": ["+3","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+4"
+          ],
+          "possible": [
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "659 kJ/mol",
         "density": "13.31 g/cm³",
         "meltingPoint": "2233°C",
-        "boilingPoint": "4603°C"
+        "boilingPoint": "4603°C",
+        "electronAffinity": "78.6 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5233,7 +6033,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "None"
+      "commonIons": "None (forms complexes/oxoanions)",
+      "commonOxidationStates": "+5"
     },
     "level2_atomic": {
       "mass": {
@@ -5245,28 +6046,38 @@ export const finallyData = {
       "electronsNeutral": 73,
       "naturalIsotopes": [
         {
-          "name": "Ta-180",
+          "name": "Ta-180m",
           "neutron": "107n",
-          "percent": "Stable"
+          "percent": "Stable (metastable isomer, 0.012%)"
         },
         {
           "name": "Ta-181",
           "neutron": "108n",
-          "percent": "Stable"
+          "percent": "Stable (99.988%)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d³ 6s²",
-        "oxidationStates": { "common": ["+5"], "possible": ["+4","+3"] }
+        "oxidationStates": {
+          "common": [
+            "+5"
+          ],
+          "possible": [
+            "+4",
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.5,
         "firstIonization": "761 kJ/mol",
         "density": "16.69 g/cm³",
         "meltingPoint": "3017°C",
-        "boilingPoint": "5458°C"
+        "boilingPoint": "5458°C",
+        "electronAffinity": "14.5 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5286,7 +6097,9 @@ export const finallyData = {
         "Low toxicity",
         "biocompatible"
       ]
-    }
+    },
+    "isotopeNotes": "Naturally occurring ¹⁸⁰ᵐTa is a metastable nuclear isomer — the only naturally occurring metastable isomer. The ground state ¹⁸⁰Ta (t½ ~8 h) has never been observed in nature. ¹⁸⁰ᵐTa is observationally stable (t½ > 1.2×10¹⁵ y).",
+    "chemistryNotes": "Tantalum most commonly exhibits +5 oxidation state in compounds such as Ta₂O₅. The earlier listing of 'None' for common ions was incorrect. Tantalum exhibits the +5 oxidation state but does not form simple Ta⁵⁺ aqueous ions."
   },
   "74": {
     "id": 74,
@@ -5298,7 +6111,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "W⁴⁺ (Tungsten(IV))"
+      "commonIons": "None (forms polyoxometalates, e.g., WO₄²⁻)",
+      "commonOxidationStates": "+6, +5, +4"
     },
     "level2_atomic": {
       "mass": {
@@ -5310,38 +6124,54 @@ export const finallyData = {
       "electronsNeutral": 74,
       "naturalIsotopes": [
         {
+          "name": "W-180",
+          "neutron": "106n",
+          "percent": "Radioactive (0.12%, α-decay, t½ ~1.8×10¹⁸ y)"
+        },
+        {
           "name": "W-182",
           "neutron": "108n",
-          "percent": "Stable"
+          "percent": "Stable (26.50%)"
         },
         {
           "name": "W-183",
           "neutron": "109n",
-          "percent": "Stable"
+          "percent": "Stable (14.31%)"
         },
         {
           "name": "W-184",
           "neutron": "110n",
-          "percent": "Stable"
+          "percent": "Stable (30.64%)"
         },
         {
           "name": "W-186",
           "neutron": "112n",
-          "percent": "Stable"
+          "percent": "Radioactive (28.43%, t½ ~4.1×10¹⁸ y, α)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d⁴ 6s²",
-        "oxidationStates": { "common": ["+6"], "possible": ["+5","+4","+3","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+6"
+          ],
+          "possible": [
+            "+5",
+            "+4",
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.36,
         "firstIonization": "770 kJ/mol",
         "density": "19.25 g/cm³",
         "meltingPoint": "3422°C [Highest of all metals]",
-        "boilingPoint": "5930°C"
+        "boilingPoint": "5555°C",
+        "electronAffinity": "106.1 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5363,7 +6193,9 @@ export const finallyData = {
         "Dust irritates lungs",
         "largely non-toxic"
       ]
-    }
+    },
+    "isotopeNotes": "Natural tungsten has five isotopes. ¹⁸⁰W and ¹⁸⁶W are very mildly radioactive (α-emitters with extremely long half-lives). ¹⁸²W, ¹⁸³W, and ¹⁸⁴W are observationally stable.",
+    "chemistryNotes": "The +6 oxidation state is most common (WO₃, WO₄²⁻, WF₆). The older boiling point value of 5930°C found in some references is now considered outdated; modern consensus favors ~5555°C (CRC, RSC). Tungsten does not form a simple W⁶⁺ monatomic ion."
   },
   "75": {
     "id": 75,
@@ -5375,7 +6207,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Re⁴⁺ (Rhenium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+7"
     },
     "level2_atomic": {
       "mass": {
@@ -5401,14 +6234,26 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d⁵ 6s²",
-        "oxidationStates": { "common": ["+7"], "possible": ["+6","+5","+4","+3","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+7"
+          ],
+          "possible": [
+            "+6",
+            "+5",
+            "+4",
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.9,
         "firstIonization": "760 kJ/mol",
         "density": "21.02 g/cm³",
         "meltingPoint": "3186°C",
-        "boilingPoint": "5596°C"
+        "boilingPoint": "5596°C",
+        "electronAffinity": "151 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5440,7 +6285,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Os⁴⁺ (Osmium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+4, +8"
     },
     "level2_atomic": {
       "mass": {
@@ -5486,14 +6332,26 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d⁶ 6s²",
-        "oxidationStates": { "common": ["+4","+8"], "possible": ["+2","+3","+6","+7"] }
+        "oxidationStates": {
+          "common": [
+            "+4",
+            "+8"
+          ],
+          "possible": [
+            "+2",
+            "+3",
+            "+6",
+            "+7"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.2,
         "firstIonization": "840 kJ/mol",
-        "density": "22.59 g/cm³ [Densest element]",
+        "density": "22.59 g/cm³",
         "meltingPoint": "3033°C",
-        "boilingPoint": "5012°C"
+        "boilingPoint": "5012°C",
+        "electronAffinity": "205.3 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5525,7 +6383,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Ir³⁺ (Iridium(III)), Ir⁴⁺ (Iridium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3, +4"
     },
     "level2_atomic": {
       "mass": {
@@ -5551,14 +6410,26 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d⁷ 6s²",
-        "oxidationStates": { "common": ["+3","+4"], "possible": ["+1","+2","+5","+6"] }
+        "oxidationStates": {
+          "common": [
+            "+3",
+            "+4"
+          ],
+          "possible": [
+            "+1",
+            "+2",
+            "+5",
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.2,
         "firstIonization": "880 kJ/mol",
-        "density": "22.56 g/cm³ [2nd densest]",
-        "meltingPoint": "2446°C",
-        "boilingPoint": "4428°C"
+        "density": "22.56 g/cm³",
+        "meltingPoint": "2466°C",
+        "boilingPoint": "4428°C",
+        "electronAffinity": "222.8 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5591,7 +6462,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Pt²⁺ (Platinum(II)), Pt⁴⁺ (Platinum(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+2, +4"
     },
     "level2_atomic": {
       "mass": {
@@ -5636,15 +6508,27 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Xe] 4f¹⁴ 5d⁹ 6s¹ [Exception]",
-        "oxidationStates": { "common": ["+2","+4"], "possible": ["0","+1","+3","+6"] }
+        "configuration": "[Xe] 4f¹⁴ 5d⁹ 6s¹",
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+4"
+          ],
+          "possible": [
+            "0",
+            "+1",
+            "+3",
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.28,
         "firstIonization": "870 kJ/mol",
         "density": "21.45 g/cm³",
-        "meltingPoint": "1768°C",
-        "boilingPoint": "3825°C"
+        "meltingPoint": "1768.3°C",
+        "boilingPoint": "3825°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -5699,15 +6583,25 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s¹ [Exception]",
-        "oxidationStates": { "common": ["+1","+3"], "possible": ["+2","+5"] }
+        "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s¹",
+        "oxidationStates": {
+          "common": [
+            "+1",
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+5"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.54,
         "firstIonization": "890 kJ/mol",
         "density": "19.30 g/cm³",
-        "meltingPoint": "1064°C",
-        "boilingPoint": "2970°C"
+        "meltingPoint": "1064.2°C",
+        "boilingPoint": "2856°C",
+        "electronAffinity": "19.2 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5791,14 +6685,21 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s²",
-        "oxidationStates": { "common": ["+1","+2"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1",
+            "+2"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 2,
         "firstIonization": "1007 kJ/mol",
-        "density": "13.53 g/cm³",
-        "meltingPoint": "-38.8°C",
-        "boilingPoint": "356.7°C"
+        "density": "13.534 g/cm³",
+        "meltingPoint": "-38.83°C",
+        "boilingPoint": "356.7°C",
+        "electronAffinity": "35.1 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5857,14 +6758,21 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p¹",
-        "oxidationStates": { "common": ["+1","+3"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1",
+            "+3"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1.62,
         "firstIonization": "589 kJ/mol",
         "density": "11.85 g/cm³",
         "meltingPoint": "304°C",
-        "boilingPoint": "1473°C"
+        "boilingPoint": "1473°C",
+        "electronAffinity": "91.2 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5933,14 +6841,21 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p²",
-        "oxidationStates": { "common": ["+2","+4"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2",
+            "+4"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 2.33,
         "firstIonization": "716 kJ/mol",
         "density": "11.34 g/cm³",
         "meltingPoint": "327.5°C",
-        "boilingPoint": "1749°C"
+        "boilingPoint": "1749°C",
+        "electronAffinity": "183.3 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -5988,21 +6903,28 @@ export const finallyData = {
         {
           "name": "Bi-209",
           "neutron": "126n",
-          "percent": "Stable"
+          "percent": "Radioactive (100%, α, t½ ~2.01×10¹⁹ y)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p³",
-        "oxidationStates": { "common": ["+3","+5"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+3",
+            "+5"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 2.02,
         "firstIonization": "703 kJ/mol",
         "density": "9.78 g/cm³",
         "meltingPoint": "271.4°C",
-        "boilingPoint": "1564°C"
+        "boilingPoint": "1564°C",
+        "electronAffinity": "270.1 kJ/mol"
       }
     },
     "level4_history_stse": {
@@ -6022,7 +6944,8 @@ export const finallyData = {
       "hazards": [
         "Low toxicity (unusual for heavy metals)"
       ]
-    }
+    },
+    "isotopeNotes": "²⁰⁹Bi was long considered the heaviest stable isotope. In 2003 it was shown to be α-radioactive with an extraordinarily long half-life of ~2.01×10¹⁹ years."
   },
   "84": {
     "id": 84,
@@ -6044,7 +6967,7 @@ export const finallyData = {
       },
       "protons": 84,
       "electronsNeutral": 84,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
           "name": "Po-209",
           "neutron": "125n",
@@ -6060,14 +6983,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁴",
-        "oxidationStates": { "common": ["-2","+4"], "possible": ["+2","+6"] }
+        "oxidationStates": {
+          "common": [
+            "-2",
+            "+4"
+          ],
+          "possible": [
+            "+2",
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2,
         "firstIonization": "812 kJ/mol",
-        "density": "9.20 g/cm³",
+        "density": "9.196 g/cm³",
         "meltingPoint": "254°C",
-        "boilingPoint": "962°C"
+        "boilingPoint": "962°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6100,7 +7033,7 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "7",
-      "commonIons": "At⁻ (Astatide)"
+      "commonIons": "At⁻ (Astatide, predicted)"
     },
     "level2_atomic": {
       "mass": {
@@ -6110,30 +7043,41 @@ export const finallyData = {
       },
       "protons": 85,
       "electronsNeutral": 85,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
-          "name": "At-210",
-          "neutron": "125n",
-          "percent": "Radioactive"
+          "name": "At-218",
+          "neutron": "133n",
+          "percent": "Radioactive (trace, from ²³⁸U chain)"
         },
         {
-          "name": "At-211",
-          "neutron": "126n",
-          "percent": "Radioactive"
+          "name": "At-219",
+          "neutron": "134n",
+          "percent": "Radioactive (trace, from ²³⁵U chain)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁵",
-        "oxidationStates": { "common": ["-1"], "possible": ["+1","+3","+5","+7"] }
+        "oxidationStates": {
+          "common": [
+            "-1"
+          ],
+          "possible": [
+            "+1",
+            "+3",
+            "+5",
+            "+7"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 2.2,
         "firstIonization": "899 kJ/mol (est)",
-        "density": "~6.35 g/cm³",
-        "meltingPoint": "302°C (est)",
-        "boilingPoint": "337°C (est)"
+        "density": "~6.2–6.5 g/cm³ (est, not experimentally confirmed)",
+        "meltingPoint": "~302°C (est)",
+        "boilingPoint": "~337°C (est)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6151,7 +7095,11 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Astatine has no stable isotopes. At-218 and At-219 occur in trace amounts in natural uranium decay chains. At-210 and At-211 are synthetic only. At-211 (t½ 7.2 h) is of interest for targeted alpha therapy.",
+    "dataQualityNotes": [
+      "Density is estimated from periodic trends; bulk astatine has never been observed. Melting and boiling points are extrapolated and carry large uncertainty."
+    ]
   },
   "86": {
     "id": 86,
@@ -6163,7 +7111,8 @@ export const finallyData = {
       "period": "6",
       "phaseAtSTP": "Gas",
       "valenceElectrons": "8",
-      "commonIons": "None (does not form simple ions)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "0"
     },
     "level2_atomic": {
       "mass": {
@@ -6173,35 +7122,43 @@ export const finallyData = {
       },
       "protons": 86,
       "electronsNeutral": 86,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
-          "name": "Rn-211",
-          "neutron": "125n",
-          "percent": "Radioactive"
+          "name": "Rn-219",
+          "neutron": "133n",
+          "percent": "Radioactive (from ²³⁵U chain, t½ 3.96 s)"
         },
         {
           "name": "Rn-220",
           "neutron": "134n",
-          "percent": "Radioactive"
+          "percent": "Radioactive (from ²³²Th chain, t½ 55.6 s)"
         },
         {
           "name": "Rn-222",
           "neutron": "136n",
-          "percent": "Radioactive"
+          "percent": "Radioactive (from ²³⁸U chain, t½ 3.82 d)"
         }
       ]
     },
     "level3_properties": {
       "electronic": {
         "configuration": "[Xe] 4f¹⁴ 5d¹⁰ 6s² 6p⁶",
-        "oxidationStates": { "common": ["0"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "0"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "1037 kJ/mol",
         "density": "9.73 g/L",
         "meltingPoint": "-71°C",
-        "boilingPoint": "-61.7°C"
+        "boilingPoint": "-61.7°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6221,7 +7178,8 @@ export const finallyData = {
         "Radioactive gas",
         "carcinogen via inhalation"
       ]
-    }
+    },
+    "isotopeNotes": "Rn-211 was erroneously listed previously. The three naturally occurring radon isotopes are ²¹⁹Rn (actinon), ²²⁰Rn (thoron), and ²²²Rn (radon proper), each produced in a different natural decay chain. ²²²Rn is the most significant for health/environment."
   },
   "87": {
     "id": 87,
@@ -6231,7 +7189,7 @@ export const finallyData = {
       "type": "Alkali Metal",
       "group": 1,
       "period": "7",
-      "phaseAtSTP": "Solid",
+      "phaseAtSTP": "Liquid (predicted)",
       "valenceElectrons": "1",
       "commonIons": "Fr⁺ (Francium)"
     },
@@ -6243,7 +7201,7 @@ export const finallyData = {
       },
       "protons": 87,
       "electronsNeutral": 87,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
           "name": "Fr-223",
           "neutron": "136n",
@@ -6254,14 +7212,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 7s¹",
-        "oxidationStates": { "common": ["+1"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.79,
         "firstIonization": "380 kJ/mol",
-        "density": "~2.48 g/cm³ (predicted)",
-        "meltingPoint": "~27°C (predicted)",
-        "boilingPoint": "~677°C (predicted)"
+        "density": "~2.48 g/cm³ (pred)",
+        "meltingPoint": "~21°C (pred)",
+        "boilingPoint": "~677°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6279,7 +7243,10 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "dataQualityNotes": [
+      "All physical properties are predicted. Francium has never been obtained in weighable quantities."
+    ]
   },
   "88": {
     "id": 88,
@@ -6301,7 +7268,7 @@ export const finallyData = {
       },
       "protons": 88,
       "electronsNeutral": 88,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
           "name": "Ra-223",
           "neutron": "135n",
@@ -6327,14 +7294,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 7s²",
-        "oxidationStates": { "common": ["+2"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 0.9,
         "firstIonization": "509 kJ/mol",
-        "density": "5.50 g/cm³",
-        "meltingPoint": "700°C",
-        "boilingPoint": "1737°C"
+        "density": "5.5 g/cm³",
+        "meltingPoint": "696°C",
+        "boilingPoint": "1737°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6362,11 +7335,13 @@ export const finallyData = {
     "name": "Actinium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 3,
+      "group": null,
       "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Ac³⁺ (Actinium)"
+      "commonIons": "Ac³⁺ (Actinium)",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6376,7 +7351,7 @@ export const finallyData = {
       },
       "protons": 89,
       "electronsNeutral": 89,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
           "name": "Ac-227",
           "neutron": "138n",
@@ -6387,14 +7362,20 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 6d¹ 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": [] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1.1,
         "firstIonization": "499 kJ/mol",
         "density": "10.07 g/cm³",
         "meltingPoint": "1050°C",
-        "boilingPoint": "3198°C"
+        "boilingPoint": "3198°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6413,6 +7394,14 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
+    },
+    "dataQualityNotes": [
+      "Some physical properties carry uncertainty due to limited experimental data.",
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ],
+    "uiLayout": {
+      "fallbackDisplayRow": "7",
+      "fallbackDisplayColumn": 3
     }
   },
   "90": {
@@ -6421,11 +7410,13 @@ export const finallyData = {
     "name": "Thorium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 4,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d + f)",
-      "commonIons": "Th⁴⁺ (Thorium(IV))"
+      "commonIons": "Th⁴⁺ (Thorium(IV))",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6435,7 +7426,7 @@ export const finallyData = {
       },
       "protons": 90,
       "electronsNeutral": 90,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
           "name": "Th-232",
           "neutron": "142n",
@@ -6446,14 +7437,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 6d² 7s²",
-        "oxidationStates": { "common": ["+4"], "possible": ["+3"] }
+        "oxidationStates": {
+          "common": [
+            "+4"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "587 kJ/mol",
         "density": "11.72 g/cm³",
         "meltingPoint": "1750°C",
-        "boilingPoint": "4788°C"
+        "boilingPoint": "4788°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6474,7 +7473,14 @@ export const finallyData = {
         "Low radioactivity",
         "heavy metal toxicity"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 4
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "91": {
     "id": 91,
@@ -6482,11 +7488,13 @@ export const finallyData = {
     "name": "Protactinium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 5,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d + f)",
-      "commonIons": "Pa⁴⁺ (Protactinium(IV))"
+      "commonIons": "Pa⁴⁺ (Protactinium(IV))",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6496,7 +7504,7 @@ export const finallyData = {
       },
       "protons": 91,
       "electronsNeutral": 91,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
           "name": "Pa-231",
           "neutron": "140n",
@@ -6507,14 +7515,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f² 6d¹ 7s²",
-        "oxidationStates": { "common": ["+5"], "possible": ["+4","+3"] }
+        "oxidationStates": {
+          "common": [
+            "+5"
+          ],
+          "possible": [
+            "+4",
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.5,
         "firstIonization": "568 kJ/mol",
         "density": "15.37 g/cm³",
-        "meltingPoint": "1568°C",
-        "boilingPoint": "4027°C"
+        "meltingPoint": "1572°C",
+        "boilingPoint": "4027°C (est)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6532,7 +7549,14 @@ export const finallyData = {
       "hazards": [
         "Highly toxic and radioactive"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 5
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "92": {
     "id": 92,
@@ -6540,11 +7564,13 @@ export const finallyData = {
     "name": "Uranium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 6,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d + f)",
-      "commonIons": "U³⁺ (Uranium(III)), U⁴⁺ (Uranium(IV))"
+      "commonIons": "U³⁺ (Uranium(III)), U⁴⁺ (Uranium(IV))",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6554,7 +7580,7 @@ export const finallyData = {
       },
       "protons": 92,
       "electronsNeutral": 92,
-      "naturalIsotopes": [
+      "naturallyOccurringRadioisotopes": [
         {
           "name": "U-235",
           "neutron": "143n",
@@ -6570,14 +7596,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f³ 6d¹ 7s²",
-        "oxidationStates": { "common": ["+6","+4"], "possible": ["+5","+3"] }
+        "oxidationStates": {
+          "common": [
+            "+6",
+            "+4"
+          ],
+          "possible": [
+            "+5",
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.38,
         "firstIonization": "598 kJ/mol",
-        "density": "19.10 g/cm³",
-        "meltingPoint": "1132°C",
-        "boilingPoint": "4131°C"
+        "density": "19.1 g/cm³",
+        "meltingPoint": "1132.2°C",
+        "boilingPoint": "4131°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6598,7 +7634,14 @@ export const finallyData = {
       "hazards": [
         "Radiotoxic and chemotoxic (kidney damage)"
       ]
-    }
+    },
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 6
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "93": {
     "id": 93,
@@ -6606,11 +7649,14 @@ export const finallyData = {
     "name": "Neptunium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 7,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d + f)",
-      "commonIons": "Np³⁺ (Neptunium(III)), Np⁴⁺ (Neptunium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+5",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6620,7 +7666,7 @@ export const finallyData = {
       },
       "protons": 93,
       "electronsNeutral": 93,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Np-237",
           "neutron": "144n",
@@ -6631,14 +7677,25 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f⁴ 6d¹ 7s²",
-        "oxidationStates": { "common": ["+5"], "possible": ["+3","+4","+6","+7"] }
+        "oxidationStates": {
+          "common": [
+            "+5"
+          ],
+          "possible": [
+            "+3",
+            "+4",
+            "+6",
+            "+7"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.36,
         "firstIonization": "605 kJ/mol",
-        "density": "20.25 g/cm³",
+        "density": "20.45 g/cm³",
         "meltingPoint": "644°C",
-        "boilingPoint": "3902°C"
+        "boilingPoint": "3902°C (est)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6656,7 +7713,15 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Neptunium is primarily synthetic. Np-237 (t½ 2.14×10⁶ y) is the longest-lived isotope. Trace Np-237 and Np-239 occur naturally from neutron reactions on uranium.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 7
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "94": {
     "id": 94,
@@ -6664,11 +7729,14 @@ export const finallyData = {
     "name": "Plutonium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 8,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Pu³⁺ (Plutonium(III)), Pu⁴⁺ (Plutonium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+4",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6678,7 +7746,7 @@ export const finallyData = {
       },
       "protons": 94,
       "electronsNeutral": 94,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Pu-239",
           "neutron": "145n",
@@ -6694,14 +7762,25 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f⁶ 7s²",
-        "oxidationStates": { "common": ["+4"], "possible": ["+3","+5","+6","+7"] }
+        "oxidationStates": {
+          "common": [
+            "+4"
+          ],
+          "possible": [
+            "+3",
+            "+5",
+            "+6",
+            "+7"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.28,
         "firstIonization": "585 kJ/mol",
-        "density": "19.82 g/cm³",
+        "density": "19.816 g/cm³",
         "meltingPoint": "640°C",
-        "boilingPoint": "3228°C"
+        "boilingPoint": "3228°C",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6722,7 +7801,15 @@ export const finallyData = {
         "Extremely radiotoxic",
         "criticality hazard"
       ]
-    }
+    },
+    "isotopeNotes": "Plutonium is primarily synthetic. Pu-244 (t½ 8.0×10⁷ y) is the longest-lived. Pu-239 (t½ 24,110 y) is the most significant for nuclear applications. Trace Pu-244 and Pu-239 exist naturally.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 8
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "95": {
     "id": 95,
@@ -6730,11 +7817,14 @@ export const finallyData = {
     "name": "Americium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 9,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Am³⁺ (Americium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6744,7 +7834,7 @@ export const finallyData = {
       },
       "protons": 95,
       "electronsNeutral": 95,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Am-241",
           "neutron": "146n",
@@ -6760,14 +7850,25 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f⁷ 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2","+4","+5","+6"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+4",
+            "+5",
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.13,
         "firstIonization": "578 kJ/mol",
-        "density": "12.00 g/cm³",
+        "density": "12.0 g/cm³",
         "meltingPoint": "1176°C",
-        "boilingPoint": "2607°C"
+        "boilingPoint": "2607°C (est)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6786,7 +7887,15 @@ export const finallyData = {
       "hazards": [
         "Radioactive (accumulates in bones)"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Am-243 (t½ 7,370 y) is the longest-lived. Am-241 (t½ 432.2 y) is used in smoke detectors.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 9
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "96": {
     "id": 96,
@@ -6794,11 +7903,14 @@ export const finallyData = {
     "name": "Curium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 10,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + d + f)",
-      "commonIons": "Cm³⁺ (Curium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6808,12 +7920,7 @@ export const finallyData = {
       },
       "protons": 96,
       "electronsNeutral": 96,
-      "naturalIsotopes": [
-        {
-          "name": "Cm-244",
-          "neutron": "148n",
-          "percent": "Radioactive"
-        },
+      "longestLivedIsotopes": [
         {
           "name": "Cm-247",
           "neutron": "151n",
@@ -6824,14 +7931,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f⁷ 6d¹ 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2","+4"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.28,
         "firstIonization": "581 kJ/mol",
         "density": "13.51 g/cm³",
-        "meltingPoint": "1340°C",
-        "boilingPoint": "3110°C"
+        "meltingPoint": "1345°C",
+        "boilingPoint": "3110°C (est)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6849,7 +7965,15 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Cm-247 (t½ 1.56×10⁷ y) is the longest-lived isotope.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 10
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "97": {
     "id": 97,
@@ -6857,11 +7981,14 @@ export const finallyData = {
     "name": "Berkelium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 11,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Bk³⁺ (Berkelium(III)), Bk⁴⁺ (Berkelium(IV))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6871,7 +7998,7 @@ export const finallyData = {
       },
       "protons": 97,
       "electronsNeutral": 97,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Bk-247",
           "neutron": "150n",
@@ -6882,14 +8009,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f⁹ 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2","+4"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "601 kJ/mol",
         "density": "14.78 g/cm³",
         "meltingPoint": "986°C",
-        "boilingPoint": "2627°C (predicted)"
+        "boilingPoint": "2627°C (est)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6907,7 +8043,15 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Bk-247 (t½ 1,380 y) is the longest-lived isotope.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 11
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "98": {
     "id": 98,
@@ -6915,11 +8059,14 @@ export const finallyData = {
     "name": "Californium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 12,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Cf³⁺ (Californium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6929,15 +8076,10 @@ export const finallyData = {
       },
       "protons": 98,
       "electronsNeutral": 98,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Cf-251",
           "neutron": "153n",
-          "percent": "Radioactive"
-        },
-        {
-          "name": "Cf-252",
-          "neutron": "154n",
           "percent": "Radioactive"
         }
       ]
@@ -6945,14 +8087,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁰ 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2","+4"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "608 kJ/mol",
-        "density": "15.10 g/cm³",
+        "density": "15.1 g/cm³",
         "meltingPoint": "900°C",
-        "boilingPoint": "1470°C (predicted)"
+        "boilingPoint": "N/A (est)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -6971,7 +8122,15 @@ export const finallyData = {
       "hazards": [
         "Intense neutron emitter"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Cf-251 (t½ 898 y) is the longest-lived isotope. Cf-252 is a strong neutron source used industrially.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 12
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "99": {
     "id": 99,
@@ -6979,11 +8138,14 @@ export const finallyData = {
     "name": "Einsteinium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 13,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Es³⁺ (Einsteinium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -6993,15 +8155,10 @@ export const finallyData = {
       },
       "protons": 99,
       "electronsNeutral": 99,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Es-252",
           "neutron": "153n",
-          "percent": "Radioactive"
-        },
-        {
-          "name": "Es-253",
-          "neutron": "154n",
           "percent": "Radioactive"
         }
       ]
@@ -7009,14 +8166,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹¹ 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "619 kJ/mol",
-        "density": "8.84 g/cm³",
-        "meltingPoint": "860°C",
-        "boilingPoint": "996°C (predicted)"
+        "density": "8.84 g/cm³ (est)",
+        "meltingPoint": "860°C (est)",
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7034,7 +8199,15 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Es-252 (t½ 471.7 d) is the longest-lived isotope amenable to study. Es-254 has t½ 275.7 d.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 13
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "100": {
     "id": 100,
@@ -7042,11 +8215,14 @@ export const finallyData = {
     "name": "Fermium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 14,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Fm³⁺ (Fermium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -7056,7 +8232,7 @@ export const finallyData = {
       },
       "protons": 100,
       "electronsNeutral": 100,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Fm-257",
           "neutron": "157n",
@@ -7067,14 +8243,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹² 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "627 kJ/mol",
-        "density": "Unknown",
-        "meltingPoint": "1527°C",
-        "boilingPoint": "Unknown"
+        "density": "N/A",
+        "meltingPoint": "1527°C (est)",
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7092,7 +8276,15 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Fm-257 (t½ 100.5 d) is the longest-lived isotope.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 14
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "101": {
     "id": 101,
@@ -7100,11 +8292,14 @@ export const finallyData = {
     "name": "Mendelevium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 15,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "Md²⁺ (Mendelevium(II)), Md³⁺ (Mendelevium(III))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -7114,7 +8309,7 @@ export const finallyData = {
       },
       "protons": 101,
       "electronsNeutral": 101,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Md-258",
           "neutron": "157n",
@@ -7125,14 +8320,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹³ 7s²",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "635 kJ/mol",
-        "density": "Unknown",
-        "meltingPoint": "827°C",
-        "boilingPoint": "Unknown"
+        "density": "N/A",
+        "meltingPoint": "827°C (est)",
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7150,7 +8353,15 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Md-258 (t½ 51.5 d) is the longest-lived isotope.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 15
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "102": {
     "id": 102,
@@ -7158,11 +8369,14 @@ export const finallyData = {
     "name": "Nobelium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 16,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "Variable (outer s + f)",
-      "commonIons": "No²⁺ (Nobelium(II))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+2",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -7172,7 +8386,7 @@ export const finallyData = {
       },
       "protons": 102,
       "electronsNeutral": 102,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "No-259",
           "neutron": "157n",
@@ -7183,14 +8397,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 7s²",
-        "oxidationStates": { "common": ["+2"], "possible": ["+3"] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "642 kJ/mol",
-        "density": "Unknown",
-        "meltingPoint": "827°C",
-        "boilingPoint": "Unknown"
+        "density": "N/A",
+        "meltingPoint": "827°C (est)",
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7208,7 +8430,15 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. No-259 (t½ 58 min) is the longest-lived isotope.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 16
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "103": {
     "id": 103,
@@ -7216,11 +8446,14 @@ export const finallyData = {
     "name": "Lawrencium",
     "level1_basic": {
       "type": "Actinide",
-      "group": 17,
-      "period": "10",
+      "group": null,
+      "period": "7",
       "phaseAtSTP": "Solid",
       "valenceElectrons": "3",
-      "commonIons": "Lr³⁺ (Lawrencium)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3",
+      "block": "f",
+      "series": "Actinide"
     },
     "level2_atomic": {
       "mass": {
@@ -7230,12 +8463,7 @@ export const finallyData = {
       },
       "protons": 103,
       "electronsNeutral": 103,
-      "naturalIsotopes": [
-        {
-          "name": "Lr-262",
-          "neutron": "159n",
-          "percent": "Radioactive"
-        },
+      "longestLivedIsotopes": [
         {
           "name": "Lr-266",
           "neutron": "163n",
@@ -7245,15 +8473,22 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Rn] 5f¹⁴ 7s² 7p¹ (Predicted)",
-        "oxidationStates": { "common": ["+3"], "possible": [] }
+        "configuration": "[Rn] 5f¹⁴ 7s² 7p¹",
+        "configurationNote": "Predicted ground-state configuration.",
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": []
+        }
       },
       "physical": {
         "electronegativity": 1.3,
         "firstIonization": "443 kJ/mol",
-        "density": "Unknown",
-        "meltingPoint": "1627°C",
-        "boilingPoint": "Unknown"
+        "density": "N/A",
+        "meltingPoint": "1627°C (pred)",
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7271,7 +8506,15 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Lr-266 (t½ ~11 h) is the longest-lived isotope.",
+    "uiLayout": {
+      "fallbackDisplayRow": "10",
+      "fallbackDisplayColumn": 17
+    },
+    "dataQualityNotes": [
+      "Group is null because f-block elements are typically separated from the 1-18 group numbering system."
+    ]
   },
   "104": {
     "id": 104,
@@ -7283,7 +8526,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Rf⁴⁺ (Rutherfordium(IV) (Predicted))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+4"
     },
     "level2_atomic": {
       "mass": {
@@ -7293,7 +8537,7 @@ export const finallyData = {
       },
       "protons": 104,
       "electronsNeutral": 104,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Rf-267",
           "neutron": "163n",
@@ -7304,14 +8548,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d² 7s²",
-        "oxidationStates": { "common": ["+4"], "possible": ["+3","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+4"
+          ],
+          "possible": [
+            "+3",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
-        "firstIonization": "580 kJ/mol (predicted)",
-        "density": "23.2 g/cm³ (predicted)",
-        "meltingPoint": "2100°C (predicted)",
-        "boilingPoint": "5500°C (predicted)"
+        "firstIonization": "580 kJ/mol (pred)",
+        "density": "23.2 g/cm³ (pred)",
+        "meltingPoint": "N/A",
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7329,7 +8582,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Rf-267 (t½ ~1.3 h) is the longest-lived known isotope."
   },
   "105": {
     "id": 105,
@@ -7341,7 +8595,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "None"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+5"
     },
     "level2_atomic": {
       "mass": {
@@ -7351,7 +8606,7 @@ export const finallyData = {
       },
       "protons": 105,
       "electronsNeutral": 105,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Db-268",
           "neutron": "163n",
@@ -7362,14 +8617,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d³ 7s²",
-        "oxidationStates": { "common": ["+5"], "possible": ["+4","+3"] }
+        "oxidationStates": {
+          "common": [
+            "+5"
+          ],
+          "possible": [
+            "+4",
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
-        "firstIonization": "665 kJ/mol (predicted)",
-        "density": "29.3 g/cm³ (predicted)",
+        "firstIonization": "665 kJ/mol (pred)",
+        "density": "29.3 g/cm³ (pred)",
         "meltingPoint": "N/A",
-        "boilingPoint": "N/A"
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7387,7 +8651,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Db-268 (t½ ~16 h) is the longest-lived known isotope."
   },
   "106": {
     "id": 106,
@@ -7399,7 +8664,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "None"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+6"
     },
     "level2_atomic": {
       "mass": {
@@ -7409,10 +8675,10 @@ export const finallyData = {
       },
       "protons": 106,
       "electronsNeutral": 106,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
-          "name": "Sg-271",
-          "neutron": "165n",
+          "name": "Sg-269",
+          "neutron": "163n",
           "percent": "Radioactive"
         }
       ]
@@ -7420,14 +8686,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d⁴ 7s²",
-        "oxidationStates": { "common": ["+6"], "possible": ["+5","+4"] }
+        "oxidationStates": {
+          "common": [
+            "+6"
+          ],
+          "possible": [
+            "+5",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
-        "firstIonization": "757 kJ/mol (predicted)",
-        "density": "35.0 g/cm³ (predicted)",
+        "firstIonization": "757 kJ/mol (pred)",
+        "density": "35.0 g/cm³ (pred)",
         "meltingPoint": "N/A",
-        "boilingPoint": "N/A"
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7445,7 +8720,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Sg-269 (t½ ~14 min) is the longest-lived confirmed isotope."
   },
   "107": {
     "id": 107,
@@ -7457,7 +8733,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "None"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+7"
     },
     "level2_atomic": {
       "mass": {
@@ -7467,10 +8744,10 @@ export const finallyData = {
       },
       "protons": 107,
       "electronsNeutral": 107,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
-          "name": "Bh-272",
-          "neutron": "165n",
+          "name": "Bh-270",
+          "neutron": "163n",
           "percent": "Radioactive"
         }
       ]
@@ -7478,14 +8755,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d⁵ 7s²",
-        "oxidationStates": { "common": ["+7"], "possible": ["+5","+4","+3"] }
+        "oxidationStates": {
+          "common": [
+            "+7"
+          ],
+          "possible": [
+            "+5",
+            "+4",
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
-        "firstIonization": "740 kJ/mol (predicted)",
-        "density": "37.1 g/cm³ (predicted)",
+        "firstIonization": "740 kJ/mol (pred)",
+        "density": "37.1 g/cm³ (pred)",
         "meltingPoint": "N/A",
-        "boilingPoint": "N/A"
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7503,7 +8790,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Bh-270 (t½ ~2.4 min) is the longest-lived known isotope."
   },
   "108": {
     "id": 108,
@@ -7515,7 +8803,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "None"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+8"
     },
     "level2_atomic": {
       "mass": {
@@ -7525,10 +8814,10 @@ export const finallyData = {
       },
       "protons": 108,
       "electronsNeutral": 108,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
-          "name": "Hs-277",
-          "neutron": "169n",
+          "name": "Hs-269",
+          "neutron": "161n",
           "percent": "Radioactive"
         }
       ]
@@ -7536,14 +8825,24 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d⁶ 7s²",
-        "oxidationStates": { "common": ["+8"], "possible": ["+6","+4","+2"] }
+        "oxidationStates": {
+          "common": [
+            "+8"
+          ],
+          "possible": [
+            "+6",
+            "+4",
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
-        "firstIonization": "730 kJ/mol (predicted)",
-        "density": "41.0 g/cm³ (predicted)",
+        "firstIonization": "730 kJ/mol (pred)",
+        "density": "40.7 g/cm³ (pred)",
         "meltingPoint": "N/A",
-        "boilingPoint": "N/A"
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7561,7 +8860,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Hs-269 (t½ ~16 s) is among the longest-lived. Chemical studies confirmed Hs forms volatile HsO₄ like osmium."
   },
   "109": {
     "id": 109,
@@ -7573,7 +8873,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Unknown (Predicted properties)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+3"
     },
     "level2_atomic": {
       "mass": {
@@ -7583,7 +8884,7 @@ export const finallyData = {
       },
       "protons": 109,
       "electronsNeutral": 109,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Mt-278",
           "neutron": "169n",
@@ -7593,15 +8894,26 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Rn] 5f¹⁴ 6d⁷ 7s² (Predicted)",
-        "oxidationStates": { "common": ["+3"], "possible": ["+2","+4","+6"] }
+        "configuration": "[Rn] 5f¹⁴ 6d⁷ 7s²",
+        "configurationNote": "Predicted ground-state configuration.",
+        "oxidationStates": {
+          "common": [
+            "+3"
+          ],
+          "possible": [
+            "+2",
+            "+4",
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
-        "firstIonization": "800 kJ/mol (predicted)",
-        "density": "37.4 g/cm³ (predicted)",
+        "firstIonization": "800 kJ/mol (pred)",
+        "density": "37.4 g/cm³ (pred)",
         "meltingPoint": "N/A",
-        "boilingPoint": "N/A"
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7619,7 +8931,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Mt-278 (t½ ~4.5 s) is the longest-lived known isotope. No chemical properties have been experimentally verified."
   },
   "110": {
     "id": 110,
@@ -7631,7 +8944,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Unknown (Predicted properties)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+2"
     },
     "level2_atomic": {
       "mass": {
@@ -7641,7 +8955,7 @@ export const finallyData = {
       },
       "protons": 110,
       "electronsNeutral": 110,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Ds-281",
           "neutron": "171n",
@@ -7651,15 +8965,24 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Rn] 5f¹⁴ 6d⁹ 7s¹ (Predicted)",
-        "oxidationStates": { "common": ["+2"], "possible": ["+4"] }
+        "configuration": "[Rn] 5f¹⁴ 6d⁹ 7s¹",
+        "configurationNote": "Predicted ground-state configuration.",
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "34.8 g/cm³ (predicted)",
+        "density": "34.8 g/cm³ (pred)",
         "meltingPoint": "N/A",
-        "boilingPoint": "N/A"
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7677,7 +9000,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Ds-281 (t½ ~12.7 s) is the longest-lived known isotope."
   },
   "111": {
     "id": 111,
@@ -7689,7 +9013,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "Variable (outer s + d)",
-      "commonIons": "Unknown (Predicted properties)"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+1"
     },
     "level2_atomic": {
       "mass": {
@@ -7699,7 +9024,7 @@ export const finallyData = {
       },
       "protons": 111,
       "electronsNeutral": 111,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Rg-282",
           "neutron": "171n",
@@ -7709,15 +9034,24 @@ export const finallyData = {
     },
     "level3_properties": {
       "electronic": {
-        "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s¹ (Predicted)",
-        "oxidationStates": { "common": ["+1"], "possible": ["+3"] }
+        "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s¹",
+        "configurationNote": "Predicted ground-state configuration.",
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "28.7 g/cm³ (predicted)",
+        "density": "28.7 g/cm³ (pred)",
         "meltingPoint": "N/A",
-        "boilingPoint": "N/A"
+        "boilingPoint": "N/A",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7735,7 +9069,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Rg-282 (t½ ~0.5 min) is the longest-lived known isotope."
   },
   "112": {
     "id": 112,
@@ -7747,7 +9082,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "2",
-      "commonIons": "Cn²⁺ (Copernicium(II) (Predicted))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+2"
     },
     "level2_atomic": {
       "mass": {
@@ -7757,7 +9093,7 @@ export const finallyData = {
       },
       "protons": 112,
       "electronsNeutral": 112,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Cn-285",
           "neutron": "173n",
@@ -7768,14 +9104,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s²",
-        "oxidationStates": { "common": ["+2"], "possible": ["+1","+4"] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+1",
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
         "density": "Unknown",
-        "meltingPoint": "~10°C (predicted)",
-        "boilingPoint": "~67°C (predicted)"
+        "meltingPoint": "~10°C (pred)",
+        "boilingPoint": "~67°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7793,7 +9138,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Cn-285 (t½ ~28 s) is the longest-lived known isotope. Chemical experiments suggest high volatility, possibly liquid or gaseous at STP."
   },
   "113": {
     "id": 113,
@@ -7805,7 +9151,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "3",
-      "commonIons": "Nh⁺ (Nihonium(I) (Predicted))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+1"
     },
     "level2_atomic": {
       "mass": {
@@ -7815,7 +9162,7 @@ export const finallyData = {
       },
       "protons": 113,
       "electronsNeutral": 113,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Nh-286",
           "neutron": "173n",
@@ -7826,14 +9173,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p¹",
-        "oxidationStates": { "common": ["+1"], "possible": ["+3"] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": [
+            "+3"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "~16 g/cm³ (predicted)",
-        "meltingPoint": "~430°C (predicted)",
-        "boilingPoint": "~1130°C (predicted)"
+        "density": "~16 g/cm³ (pred)",
+        "meltingPoint": "~430°C (pred)",
+        "boilingPoint": "~1130°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7851,7 +9206,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Nh-286 (t½ ~8 s) is the longest-lived known isotope."
   },
   "114": {
     "id": 114,
@@ -7863,7 +9219,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "4",
-      "commonIons": "Fl²⁺ (Flerovium(II) (Predicted))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+2"
     },
     "level2_atomic": {
       "mass": {
@@ -7873,7 +9230,7 @@ export const finallyData = {
       },
       "protons": 114,
       "electronsNeutral": 114,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Fl-289",
           "neutron": "175n",
@@ -7884,14 +9241,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p²",
-        "oxidationStates": { "common": ["+2"], "possible": ["+4"] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+4"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "~14 g/cm³ (predicted)",
-        "meltingPoint": "~-73°C (predicted)",
-        "boilingPoint": "~107°C (predicted)"
+        "density": "~14 g/cm³ (pred)",
+        "meltingPoint": "~-73°C (pred)",
+        "boilingPoint": "~107°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7909,7 +9274,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Fl-289 (t½ ~1.9 s) is the longest-lived known isotope. Predicted to be near the island of stability."
   },
   "115": {
     "id": 115,
@@ -7921,7 +9287,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "5",
-      "commonIons": "Mc⁺ (Moscovium(I) (Predicted)), Mc³⁺ (Moscovium(III) (Predicted))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+1"
     },
     "level2_atomic": {
       "mass": {
@@ -7931,7 +9298,7 @@ export const finallyData = {
       },
       "protons": 115,
       "electronsNeutral": 115,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Mc-290",
           "neutron": "175n",
@@ -7942,14 +9309,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p³",
-        "oxidationStates": { "common": ["+1"], "possible": ["+3","+5"] }
+        "oxidationStates": {
+          "common": [
+            "+1"
+          ],
+          "possible": [
+            "+3",
+            "+5"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "~13.5 g/cm³ (predicted)",
-        "meltingPoint": "~400°C (predicted)",
-        "boilingPoint": "~1100°C (predicted)"
+        "density": "~13.5 g/cm³ (pred)",
+        "meltingPoint": "~400°C (pred)",
+        "boilingPoint": "~1100°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -7967,7 +9343,8 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Mc-290 (t½ ~0.65 s) is the longest-lived known isotope."
   },
   "116": {
     "id": 116,
@@ -7979,7 +9356,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "6",
-      "commonIons": "Lv²⁺ (Livermorium(II) (Predicted))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "+2"
     },
     "level2_atomic": {
       "mass": {
@@ -7989,7 +9367,7 @@ export const finallyData = {
       },
       "protons": 116,
       "electronsNeutral": 116,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Lv-293",
           "neutron": "177n",
@@ -8000,14 +9378,23 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁴",
-        "oxidationStates": { "common": ["+2"], "possible": ["+4","+6"] }
+        "oxidationStates": {
+          "common": [
+            "+2"
+          ],
+          "possible": [
+            "+4",
+            "+6"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "~12.9 g/cm³ (predicted)",
-        "meltingPoint": "364–507°C (predicted)",
-        "boilingPoint": "762–862°C (predicted)"
+        "density": "~12.9 g/cm³ (pred)",
+        "meltingPoint": "364–507°C (pred)",
+        "boilingPoint": "762–862°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -8025,7 +9412,8 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Lv-293 (t½ ~53 ms) is the longest-lived known isotope."
   },
   "117": {
     "id": 117,
@@ -8037,7 +9425,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "7",
-      "commonIons": "Ts⁻ (Tennesside (Predicted))"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "-1"
     },
     "level2_atomic": {
       "mass": {
@@ -8047,7 +9436,7 @@ export const finallyData = {
       },
       "protons": 117,
       "electronsNeutral": 117,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Ts-294",
           "neutron": "177n",
@@ -8058,14 +9447,25 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁵",
-        "oxidationStates": { "common": ["-1"], "possible": ["+1","+3","+5","+7"] }
+        "oxidationStates": {
+          "common": [
+            "-1"
+          ],
+          "possible": [
+            "+1",
+            "+3",
+            "+5",
+            "+7"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "~7.17 g/cm³ (predicted)",
-        "meltingPoint": "350–550°C (predicted)",
-        "boilingPoint": "610°C (predicted)"
+        "density": "~7.17 g/cm³ (pred)",
+        "meltingPoint": "350–550°C (pred)",
+        "boilingPoint": "610°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -8083,7 +9483,8 @@ export const finallyData = {
       "hazards": [
         "Highly radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Ts-294 (t½ ~51 ms) is the longest-lived known isotope."
   },
   "118": {
     "id": 118,
@@ -8095,7 +9496,8 @@ export const finallyData = {
       "period": "7",
       "phaseAtSTP": "Unknown",
       "valenceElectrons": "8",
-      "commonIons": "Unknown"
+      "commonIons": "None (covalent or complex ions dominant)",
+      "commonOxidationStates": "0"
     },
     "level2_atomic": {
       "mass": {
@@ -8105,7 +9507,7 @@ export const finallyData = {
       },
       "protons": 118,
       "electronsNeutral": 118,
-      "naturalIsotopes": [
+      "longestLivedIsotopes": [
         {
           "name": "Og-294",
           "neutron": "176n",
@@ -8116,14 +9518,22 @@ export const finallyData = {
     "level3_properties": {
       "electronic": {
         "configuration": "[Rn] 5f¹⁴ 6d¹⁰ 7s² 7p⁶",
-        "oxidationStates": { "common": ["0"], "possible": ["+2"] }
+        "oxidationStates": {
+          "common": [
+            "0"
+          ],
+          "possible": [
+            "+2"
+          ]
+        }
       },
       "physical": {
         "electronegativity": null,
         "firstIonization": "N/A",
-        "density": "~4.9–5.1 g/cm³ (predicted)",
-        "meltingPoint": ">50°C (predicted)",
-        "boilingPoint": "80°C (predicted)"
+        "density": "~4.9–5.1 g/cm³ (pred)",
+        "meltingPoint": "~50°C (pred)",
+        "boilingPoint": "~80°C (pred)",
+        "electronAffinity": "N/A"
       }
     },
     "level4_history_stse": {
@@ -8141,7 +9551,8 @@ export const finallyData = {
       "hazards": [
         "Radioactive"
       ]
-    }
+    },
+    "isotopeNotes": "Synthetic element. Og-294 (t½ ~0.69 ms) is the only confirmed isotope. Relativistic effects predict it may be a solid or a semiconductor rather than a noble gas."
   }
 };
 
@@ -8152,7 +9563,7 @@ export const elements = [
     "name": "Hydrogen",
     "row": 1,
     "column": 1,
-    "category": "Reactive nonmetal"
+    "category": "Other nonmetal"
   },
   {
     "number": 2,
@@ -8192,7 +9603,7 @@ export const elements = [
     "name": "Carbon",
     "row": 2,
     "column": 14,
-    "category": "Reactive nonmetal"
+    "category": "Other nonmetal"
   },
   {
     "number": 7,
@@ -8200,7 +9611,7 @@ export const elements = [
     "name": "Nitrogen",
     "row": 2,
     "column": 15,
-    "category": "Reactive nonmetal"
+    "category": "Other nonmetal"
   },
   {
     "number": 8,
@@ -8208,7 +9619,7 @@ export const elements = [
     "name": "Oxygen",
     "row": 2,
     "column": 16,
-    "category": "Reactive nonmetal"
+    "category": "Other nonmetal"
   },
   {
     "number": 9,
@@ -8264,7 +9675,7 @@ export const elements = [
     "name": "Phosphorus",
     "row": 3,
     "column": 15,
-    "category": "Reactive nonmetal"
+    "category": "Other nonmetal"
   },
   {
     "number": 16,
@@ -8272,7 +9683,7 @@ export const elements = [
     "name": "Sulfur",
     "row": 3,
     "column": 16,
-    "category": "Reactive nonmetal"
+    "category": "Other nonmetal"
   },
   {
     "number": 17,
@@ -8416,7 +9827,7 @@ export const elements = [
     "name": "Selenium",
     "row": 4,
     "column": 16,
-    "category": "Reactive nonmetal"
+    "category": "Other nonmetal"
   },
   {
     "number": 35,

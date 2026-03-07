@@ -51,10 +51,7 @@
 
 ## 🚀 Quick Start
 
-### Option 1: Direct Access
-Simply open `index.html` in your browser - no installation required!
-
-### Option 2: Local Development
+### Local Development
 ```bash
 # Clone the repository
 git clone https://github.com/YOUR_USERNAME/zperiod.git
@@ -62,8 +59,26 @@ git clone https://github.com/YOUR_USERNAME/zperiod.git
 # Navigate to project directory
 cd zperiod
 
-# Open in browser
-open index.html
+# Install dependencies
+npm install
+
+# Start dev server (with hot reload)
+npm run dev
+```
+
+### Quality Checks
+```bash
+# Lint + syntax check + production build
+npm run check
+```
+
+### Production Build
+```bash
+# Build static files to dist/
+npm run build
+
+# Preview production build locally
+npm run preview
 ```
 
 ---
@@ -72,10 +87,13 @@ open index.html
 
 ```
 zperiod/
+├── .github/workflows/ci.yml # CI pipeline
+├── package.json            # Vite scripts and dependencies
 ├── index.html              # Main HTML file
 ├── script.js               # Main JavaScript logic
-├── three.min.js            # Three.js for 3D rendering
+├── three.min.js            # Legacy local Three.js copy
 ├── logo.svg                # Project logo
+├── public/                 # Static files copied directly by Vite
 ├── css/
 │   ├── base.css            # Design tokens, layout, navigation
 │   ├── grid.css            # Periodic table grid
