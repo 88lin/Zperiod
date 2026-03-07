@@ -8,17 +8,55 @@
 .chemistry-tools-page {
   align-items: center;
   justify-content: center;
-  padding-top: 40px;
+  padding-top: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background Ambient Orbs Decoration */
+.chemistry-tools-page::before {
+  content: "";
+  position: absolute;
+  top: -15%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 60%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.chemistry-tools-page::after {
+  content: "";
+  position: absolute;
+  bottom: -20%;
+  right: -5%;
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.08) 0%, transparent 60%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+html.dark-theme .chemistry-tools-page::before {
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.04) 0%, transparent 60%);
+}
+
+html.dark-theme .chemistry-tools-page::after {
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.04) 0%, transparent 60%);
 }
 
 .chem-tools-container {
   max-width: 900px;
   width: 100%;
-  padding: 60px;
-  padding-bottom: 60px;
+  padding: 2vmin;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .chem-tools-title {
@@ -35,7 +73,7 @@
   font-weight: 600;
   color: var(--text-secondary);
   text-align: center;
-  margin-bottom: 4vmin;
+  margin-bottom: 3.5vmin;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   opacity: 0.7;
@@ -44,7 +82,7 @@
 .chem-tools-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 28px;
+  gap: 20px;
   width: 100%;
   max-width: 1000px;
 }
@@ -60,13 +98,13 @@
 .chem-tool-card {
   background: var(--bg-color);
   border: 1px solid var(--border-color);
-  border-radius: 32px;
-  padding: 40px;
+  border-radius: 3vw;
+  padding: 3vmin 3.5vmin;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 2vmin;
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
@@ -83,7 +121,7 @@ html.dark-theme .chem-tool-card {
   left: 0;
   right: 0;
   bottom: 0;
-  border-radius: 32px;
+  border-radius: 3vw;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.0));
   z-index: 0;
   pointer-events: none;
@@ -121,19 +159,19 @@ html.dark-theme .chem-tool-card::before {
 
 /* Tool Icon Box */
 .chem-tool-icon-box {
-  width: 72px;
-  height: 72px;
+  width: 7vmin;
+  height: 7vmin;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 20px;
+  border-radius: 2vmin;
   position: relative;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .chem-tool-icon-box svg {
-  width: 36px;
-  height: 36px;
+  width: 3.5vmin;
+  height: 3.5vmin;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -144,8 +182,8 @@ html.dark-theme .chem-tool-card::before {
 
 /* Arrow */
 .chem-tool-arrow {
-  width: 48px;
-  height: 48px;
+  width: 4.5vmin;
+  height: 4.5vmin;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,8 +196,8 @@ html.dark-theme .chem-tool-card::before {
 }
 
 .chem-tool-arrow svg {
-  width: 20px;
-  height: 20px;
+  width: 2vmin;
+  height: 2vmin;
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -178,9 +216,9 @@ html.dark-theme .chem-tool-card::before {
 /* Tool Number Badge */
 .chem-tool-number {
   position: absolute;
-  top: 8px;
-  left: 10px;
-  font-size: 11px;
+  top: 0.8vmin;
+  left: 1vmin;
+  font-size: 1.1vmin;
   font-weight: 800;
   color: inherit;
   opacity: 0.5;
@@ -190,13 +228,13 @@ html.dark-theme .chem-tool-card::before {
 .chem-tool-info {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1.2vmin;
   position: relative;
   z-index: 1;
 }
 
 .chem-tool-name {
-  font-size: 1.8rem;
+  font-size: 2vmin;
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.03em;
@@ -209,7 +247,7 @@ html.dark-theme .chem-tool-card::before {
 }
 
 .chem-tool-desc {
-  font-size: 1.05rem;
+  font-size: 1.2vmin;
   color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
@@ -247,8 +285,8 @@ html.dark-theme .empirical-icon {
 /* Tool Tags */
 .chem-tool-tags {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 1vmin;
+  margin-top: 1vmin;
   align-items: center;
 }
 
@@ -257,10 +295,10 @@ html.dark-theme .empirical-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 26px;
-  padding: 0 12px;
-  border-radius: 8px;
-  font-size: 12px;
+  height: 2.8vmin;
+  padding: 0 1.2vmin;
+  border-radius: 0.8vmin;
+  font-size: 1.1vmin;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
