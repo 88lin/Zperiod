@@ -1810,6 +1810,7 @@ function isPlainObject(value) {
 }
 
 function deepMerge(base, overrides) {
+  if (!base) base = {};
   const result = { ...base };
   Object.keys(overrides || {}).forEach((key) => {
     const baseVal = result[key];
