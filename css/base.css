@@ -30,6 +30,10 @@
   -webkit-font-smoothing: antialiased;
 }
 
+html {
+  overscroll-behavior: none;
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--text-primary);
@@ -37,10 +41,12 @@ body {
     "Inter",
     -apple-system,
     sans-serif;
-  height: 100vh;
+  /* Use 100dvh so Safari address bar does not cause jumping layout */
+  height: 100dvh;
   width: 100vw;
   overflow-x: auto;
   overflow-y: hidden;
+  overscroll-behavior: none;
   padding: 0;
   margin: 0;
 }
